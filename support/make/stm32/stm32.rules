@@ -53,7 +53,7 @@ endif
 
 LDFLAGS += $(INCLUDE_DIRS) $(LIBRARY_DIRS)
 
-DEFAULT_PROGRAM ?= openocd
+DEFAULT_PROGRAM ?= install
 
 
 BUILDLESS_DEPS += bytes
