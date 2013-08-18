@@ -23,7 +23,8 @@
  * @author Thomas Schmid
  */
 
-#include "stm32exceptions.h"
+//#include "stm32exceptions.h"
+#include "stm32f4xx_it.h"
 
 module HplSTM32InterruptM
 {

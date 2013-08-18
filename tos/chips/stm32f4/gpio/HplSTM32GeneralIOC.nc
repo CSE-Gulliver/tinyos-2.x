@@ -25,7 +25,7 @@
  * @author Thomas Schmid
  */
 
-#include <stm32hardware.h>
+#include <stm32f4hardware.h>
 
 configuration HplSTM32GeneralIOC
 {

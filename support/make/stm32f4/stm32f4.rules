@@ -20,8 +20,9 @@ OBJCOPY = arm-none-eabi-objcopy
 OBJDUMP = arm-none-eabi-objdump
 SET_ID = tos-set-symbols
 XDB_SYMBOL_EXTRACT = dwarf2bd
-NCC = ncc
-LIBS = -lm -lvectors-stm32 -lstm32fw
+NCC = ncc 
+#LIBS = -lm -lvectors-stm32 -lstm32fw
+LIBS = -lstm32f4fw
 AR = arm-none-eabi-ar
 ARFLAGS = cr
 
@@ -30,17 +31,32 @@ AMADDR = ActiveMessageAddressC\$$addr
 BUILDDIR ?= build/$(PLATFORM)
 MAIN_EXE = $(BUILDDIR)/main.exe
 MAIN_BIN = $(BUILDDIR)/main.bin
-INSTALL_BIN = $(MAIN_BIN).out$(if $(NODEID),-$(NODEID),)
-PLATFORM_DIR = $(TOSDIR)/platforms/stm32-p103
-CHIP_DIR = $(TOSDIR)/chips/stm32
-LIBRARY_DIRS = -L$(PLATFORM_DIR)/vectors -L$(PLATFORM_DIR) -L$(CHIP_DIR)/fwlib
-INCLUDE_DIRS = -I$(PLATFORM_DIR)
+INSTALL_BIN = $(MAIN_BIN)$(if $(NODEID),-$(NODEID),)
+#PLATFORM_DIR = $(TOSDIR)/platforms/stm32-p103
+PLATFORM_DIR = $(TOSDIR)/platforms/stm32f4
+#CHIP_DIR = $(TOSDIR)/chips/stm32
+CHIP_DIR = $(TOSDIR)/chips/stm32f4
+#LIBRARY_DIRS = -L$(PLATFORM_DIR)/vectors -L$(PLATFORM_DIR) -L$(CHIP_DIR)/fwlib
+LIBRARY_DIRS =   -L$(CHIP_DIR)/fwlib 
+INCLUDE_DIRS = -I$(CHIP_DIR) -I$(PLATFORM_DIR) -I$(CHIP_DIR)/fwlib -I$(CHIP_DIR)/fwlib/inc -I$(CHIP_DIR)/fwlib/inc/core -I$(CHIP_DIR)/fwlib/inc/peripherals/
 #ASSEMBLY_FILES += $(PLATFORM_DIR)/mmu_table.s $(PLATFORM_DIR)/util.s 
-#ASSEMBLY_OBJS =  $(BUILDDIR)/asms.o
-LIBRARY_OBJS  =  $(PLATFORM_DIR)/vectors/stm32-vector.o
+ASSEMBLY_OBJS =  $(BUILDDIR)/asms.o
+#LIBRARY_OBJS  =  $(PLATFORM_DIR)/vectors/stm32-vector.o
+
+
+CFLAGS  = -std=gnu99 -g -O2 -Wall -Tstm32_flash.ld
+CFLAGS += -mlittle-endian -mthumb -mthumb-interwork  -mcpu=cortex-m4
+
+ifeq ($(FLOAT_TYPE), hard)
+CFLAGS += -fsingle-precision-constant -Wdouble-promotion
+CFLAGS += -mfpu=fpv4-sp-d16 -mfloat-abi=hard
+#CFLAGS += -mfpu=fpv4-sp-d16 -mfloat-abi=softfp
+else
+CFLAGS += -msoft-float
+endif
+
 
 OPTFLAGS ?= -O3 -g
-CFLAGS += -mcpu=cortex-m3 -mthumb
 PFLAGS += -Wall -Wshadow $(NESC_FLAGS)
 PFLAGS += -target=$(PLATFORM) -fnesc-cfile=$(BUILDDIR)/app.c -board=$(SENSORBOARD)
 PFLAGS += $(LIBRARY_DIRS)
@@ -51,16 +67,16 @@ ifdef DEFAULT_LOCAL_GROUP
 PFLAGS += -DDEFINED_TOS_AM_GROUP=$(DEFAULT_LOCAL_GROUP)
 endif
 
-LDFLAGS += $(INCLUDE_DIRS) $(LIBRARY_DIRS)
+LDFLAGS += $(INCLUDE_DIRS) $(LIBRARY_DIRS) 
 
-DEFAULT_PROGRAM ?= openocd
+DEFAULT_PROGRAM ?= install
 
 
 BUILDLESS_DEPS += bytes
 
 # Use the 'if' function instead of the 'ifdef' construct because ifdef freaks
 # out with call in there.  I don't know why.
-$(if $(PROGRAM),,$(call TOSMake_include,stm32/$(DEFAULT_PROGRAM).extra))
+$(if $(PROGRAM),,$(call TOSMake_include,stm32f4/$(DEFAULT_PROGRAM).extra))
 
 # Build storage file if volumes.xml present
 ifneq ($(wildcard $(VOLUME_FILE)), )
@@ -98,7 +114,7 @@ exe: exe0 bytes FORCE
 #exe0: builddir asms $(BUILD_EXTRA_DEPS) FORCE
 exe0: builddir asms library $(BUILD_EXTRA_DEPS) FORCE
 	@echo "    compiling $(COMPONENT) to a $(PLATFORM) binary"
-	$(NCC) -o $(MAIN_EXE) $(OPTFLAGS) $(PFLAGS) $(CFLAGS) $(WIRING_CHECK_FLAGS) $(COMPONENT).nc $(LIBS) $(LDFLAGS) $(ASSEMBLY_OBJS) $(LIBRARY_OBJS)
+	$(NCC) -o $(MAIN_EXE) $(OPTFLAGS) $(PFLAGS) $(CFLAGS) $(WIRING_CHECK_FLAGS) $(COMPONENT).nc $(LIBS) $(LDFLAGS) $(ASSEMBLY_OBJS)
 ifdef WIRING_CHECK_FILE
 	@nescc-wiring $(WIRING_CHECK_FILE)
 endif
@@ -111,8 +127,11 @@ bytes: FORCE
 	@$(OBJDUMP) -h $(MAIN_EXE) | perl -ne '$$b{$$1}=hex $$2 if /^\s*\d+\s*\.(text|data|bss)\s+(\S+)/; END { printf("%16d bytes in ROM\n%16d bytes in RAM\n",$$b{text}+$$b{data},$$b{data}+$$b{bss}); }'
 
 asms: 
-	#$(GAS) $(ASSEMBLY_FILES) -o $(BUILDDIR)/asms.o 
+	$(GAS) $(ASSEMBLY_FILES) -o $(BUILDDIR)/asms.o 
 
 library:
-	cd $(PLATFORM_DIR)/vectors; make;
+	#cd $(PLATFORM_DIR)/vectors; make;
 	cd $(CHIP_DIR)/fwlib; make;
+	
+clean:
+	cd $(CHIP_DIR)/fwlib; make clean;

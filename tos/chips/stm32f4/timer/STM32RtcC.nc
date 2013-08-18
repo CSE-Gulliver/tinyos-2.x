@@ -25,7 +25,7 @@
  * @author Thomas Schmid
  */
 
-#include "stm32fwlib.h"
+#include "stm32f4xx_rtc.h"
 
 module STM32RtcC @safe()
 {
@@ -39,15 +39,92 @@ module STM32RtcC @safe()
 implementation
 {
 
-    norace uint32_t alarm;
+    norace uint32_t last_interval;
+    norace uint32_t system_time;
     bool running;
+    
+    volatile uint32_t wake_up_interval;
+    
+    void init_rtc();
+    void init_rtc_exti();
+    
+    static NVIC_InitTypeDef NVIC_InitStructure={
+	
+		.NVIC_IRQChannel = RTC_WKUP_IRQn,
+		.NVIC_IRQChannelPreemptionPriority = 1,
+		.NVIC_IRQChannelSubPriority = 0,
+		.NVIC_IRQChannelCmd = ENABLE,		
+		
+	};
 
+	void init_rtc() {
+		RTC_InitTypeDef RTC_InitStructure;
+
+		/* Enable the PWR clock */
+		RCC_APB1PeriphClockCmd(RCC_APB1Periph_PWR, ENABLE);
+
+		/* Allow access to RTC */
+		PWR_BackupAccessCmd(ENABLE);
+		/* Reset BKP Domain */
+		RCC_BackupResetCmd(ENABLE);
+		RCC_BackupResetCmd(DISABLE);
+
+		/* Enable the LSI OSC */
+		RCC_LSICmd(ENABLE);
+
+		/* Wait till LSI is ready */
+		while (RCC_GetFlagStatus(RCC_FLAG_LSIRDY) == RESET)
+			;
+
+		/* Select the RTC Clock Source */
+		RCC_RTCCLKConfig(RCC_RTCCLKSource_LSI);
+
+		/* Enable the RTC Clock */
+		RCC_RTCCLKCmd(ENABLE);
+	
+		/* Wait for RTC APB registers synchronisation */
+		RTC_WaitForSynchro();
+
+		/* Configure the RTC data register and RTC prescaler */
+		RTC_InitStructure.RTC_AsynchPrediv = 0x20;
+		RTC_InitStructure.RTC_SynchPrediv = 0x00;
+		RTC_InitStructure.RTC_HourFormat = RTC_HourFormat_24;
+		RTC_Init(&RTC_InitStructure);
+	}
+
+	
+	void init_rtc_exti(){
+		EXTI_InitTypeDef EXTI_InitStructure;
+
+		/* Connect EXTI_Line22 to the RTC Wakeup event */
+		EXTI_ClearITPendingBit(EXTI_Line22);
+		EXTI_InitStructure.EXTI_Line = EXTI_Line22;
+		EXTI_InitStructure.EXTI_Mode = EXTI_Mode_Interrupt;
+		EXTI_InitStructure.EXTI_Trigger = EXTI_Trigger_Rising;
+		EXTI_InitStructure.EXTI_LineCmd = ENABLE;
+		EXTI_Init(&EXTI_InitStructure);
+
+		RTC_WakeUpClockConfig(RTC_WakeUpClock_CK_SPRE_16bits);
+
+	}
+
+
+	//I think we can delete RTC_WaitForLastTask statements because
+	//1. they are in atomic scopes
+	//2. stm32f4xx_rtc.c implements some protective mechanisms in each function. 
+	//	Notice: there is no such mechanism in RTC_ITConfig, RTC_ClearITPendingBit (I found two so far)	
+	
+	
+	//Please call init_rtc_wu_second(uint32_t interval) before you enable the interrupt; otherwise
+	//you cannot start the wake up interrupt
     void enableInterrupt()
     {
         /* Enable the RTC Alarm Interrupt */
         atomic {
-            RTC_ITConfig(RTC_IT_ALR, ENABLE);
-            RTC_WaitForLastTask();
+//            RTC_ITConfig(RTC_IT_ALR, ENABLE);
+            RTC_ITConfig(RTC_IT_WUT, ENABLE);
+            RTC_WakeUpCmd(ENABLE);
+//            RTC_WaitForLastTask();
             running = TRUE;
         }
     }
@@ -56,76 +133,29 @@ implementation
     {
         /* Disable the RTC Alarm Interrupt */
         atomic {
-            RTC_ClearITPendingBit(RTC_IT_ALR);
-            RTC_WaitForLastTask();
-            RTC_ITConfig(RTC_IT_ALR, DISABLE);
-            RTC_WaitForLastTask();
-            running = FALSE;
+//            RTC_ClearITPendingBit(RTC_IT_ALR);
+//            RTC_ClearITPendingBit(RTC_Alarm_IRQn);
+//			 GPIO_ToggleBits(GPIOD, GPIO_Pin_14);
+//            RTC_WaitForLastTask();
+              RTC_ITConfig(RTC_IT_WUT, DISABLE);
+              RTC_WakeUpCmd(DISABLE);
+//            RTC_WaitForLastTask();
+              running = FALSE;
         }
     }
 
 
-
     command error_t Init.init()
     {
-        NVIC_InitTypeDef NVIC_InitStructure;
+     	init_rtc();
+     	init_rtc_exti();
+		
+		atomic {
+      		system_time=0;  
+      		last_interval=0;
 
-        /* Configure one bit for preemption priority */
-        NVIC_PriorityGroupConfig(NVIC_PriorityGroup_1);
-
-        /* Enable the RTC Interrupt on the NVIC*/
-        NVIC_InitStructure.NVIC_IRQChannel = RTC_IRQChannel;
-        NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 1;
-        NVIC_InitStructure.NVIC_IRQChannelSubPriority = 0;
-        NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE;
-        NVIC_Init(&NVIC_InitStructure);
-
-        /* Enable PWR and BKP clocks */
-        RCC_APB1PeriphClockCmd(RCC_APB1Periph_PWR | RCC_APB1Periph_BKP, ENABLE);
-
-        /* Allow access to BKP Domain */
-        PWR_BackupAccessCmd(ENABLE);
-
-        /* Reset Backup Domain */
-        BKP_DeInit();
-
-        /* Enable LSE */
-        RCC_LSEConfig(RCC_LSE_ON);
-        /* Wait till LSE is ready */
-        while (RCC_GetFlagStatus(RCC_FLAG_LSERDY) == RESET) {}
-
-        /* Select LSE as RTC Clock Source */
-        RCC_RTCCLKConfig(RCC_RTCCLKSource_LSE);
-
-        /* Enable RTC Clock */
-        RCC_RTCCLKCmd(ENABLE);
-
-        /* Wait for RTC registers synchronization */
-        RTC_WaitForSynchro();
-
-        /* Wait until last write operation on RTC registers has finished */
-        RTC_WaitForLastTask();
-
-        /* Set RTC prescaler: set RTC period to 1/1024s */
-        RTC_SetPrescaler(31); /* RTC period = RTCCLK/RTC_PR = (32.768 KHz)/(31+1) */
-
-        /* Wait until last write operation on RTC registers has finished */
-        RTC_WaitForLastTask();
-
-        /* reset the counter */
-        RTC_SetCounter(0x0);
-
-        /* wait till last write has finished */
-        RTC_WaitForLastTask();
-
-        /* enable overflow interrupt for counter */
-        RTC_ITConfig(RTC_IT_OW, ENABLE);
-
-        /* wait till last write has finished */
-        RTC_WaitForLastTask();
-
-        atomic alarm=0;
-
+      	}
+		
         return SUCCESS;
     }
 
@@ -146,33 +176,40 @@ implementation
 
     async command void Alarm.startAt( uint32_t t0, uint32_t dt )
     {
-        {
+       	disableInterrupt();
+		NVIC_Init(&NVIC_InitStructure);
+		{
             uint32_t now = call Alarm.getNow();
             uint32_t elapsed = now - t0;
-            now = RTC_GetCounter();
+//            now = RTC_GetCounter();
+            now = system_time+last_interval-RTC_GetWakeUpCounter();
             if( elapsed >= dt )
             {
                 // let the timer expire at the next tic of the RTC!
-                RTC_SetAlarm(now+1); 
-                atomic alarm = now+1;
-                RTC_WaitForLastTask();
+                
+             	wake_up_interval=0x00;
+                atomic system_time = now+1;
+//                RTC_WaitForLastTask();
             }
             else
             {
                 uint32_t remaining = dt - elapsed;
                 if( remaining <= 1 )
                 {
-                    RTC_SetAlarm(now+1); 
-                    atomic alarm = now+1;
-                    RTC_WaitForLastTask();
+                   wake_up_interval=0x00;
+                    atomic system_time = now+1;
+//                    RTC_WaitForLastTask();
                 }
                 else
                 {
-                    RTC_SetAlarm(now+remaining); 
-                    atomic alarm = now+remaining;
-                    RTC_WaitForLastTask();
+//                    RTC_SetAlarm(now+remaining); 
+                  	wake_up_interval=remaining; 
+                    atomic system_time = now+remaining;
+//                    RTC_WaitForLastTask();
                 }
             }
+            RTC_SetWakeUpCounter(wake_up_interval); 
+            last_interval=wake_up_interval;
             enableInterrupt();
         }
     }
@@ -180,13 +217,13 @@ implementation
     async command uint32_t Alarm.getNow()
     {
         uint32_t c;
-        c = RTC_GetCounter();
+       	c = system_time+last_interval-RTC_GetWakeUpCounter();
         return c;
     }
 
     async command uint32_t Alarm.getAlarm()
     {
-        return alarm;
+        return system_time;
     }
 
     async command uint32_t Counter.get()
@@ -196,13 +233,14 @@ implementation
 
     async command bool Counter.isOverflowPending()
     {
-        return (RTC_GetITStatus(RTC_IT_OW));
+        return (system_time<0);
     }
 
     async command void Counter.clearOverflow()
     {
-        RTC_ClearITPendingBit(RTC_IT_OW);
-        RTC_WaitForLastTask();
+//        RTC_ClearITPendingBit(RTC_IT_OW);
+//        RTC_WaitForLastTask();
+		system_time=0;
     }
 
     async command uint32_t LocalTime.get() {
@@ -217,19 +255,25 @@ implementation
     /**
      * This is the interrupt handler defined in stm32-vectors.c.
      */
-    void RTC_IRQHandler(void) @C() @spontaneous() 
+     
+    void RTC_WKUP_IRQHandler(void) @C() @spontaneous() 
     {
-        if (RTC_GetITStatus(RTC_IT_ALR) != RESET)
+    	    
+        if (RTC_GetITStatus(RTC_IT_WUT) != RESET)
         {
             // interrupt gets cleared when the timer is stopped in
             // Alarm.stop()
+            RTC_ClearITPendingBit(RTC_IT_WUT);
+	   		EXTI_ClearITPendingBit(EXTI_Line22);
+	   		
             call Alarm.stop();
             signal Alarm.fired();
         } 
-        if (RTC_GetITStatus(RTC_IT_OW) != RESET)
+       
+        if (system_time<0)
         {
-            RTC_ClearITPendingBit(RTC_IT_OW);
-            RTC_WaitForLastTask();
+//            RTC_ClearITPendingBit(RTC_IT_OW);
+//            RTC_WaitForLastTask();
             signal Counter.overflow();
         }
 

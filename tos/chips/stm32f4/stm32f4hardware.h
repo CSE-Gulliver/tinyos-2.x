@@ -35,6 +35,8 @@
 #include "stm32f4xx_conf.h"
 #include "utils.h"
 
+#include "stm32f4xx_it.h"
+
 #define ARM_BASEPRI_INT_MASK (0x000000C0)
 
 typedef uint32_t __nesc_atomic_t;

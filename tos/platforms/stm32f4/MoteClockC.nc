@@ -32,12 +32,10 @@ configuration MoteClockC
   }
 
 }
-
 implementation
 
 {
   components MoteClockP;
   
   MoteClockInit = MoteClockP;
-
 }

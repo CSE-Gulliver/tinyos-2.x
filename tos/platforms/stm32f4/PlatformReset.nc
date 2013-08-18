@@ -20,24 +20,6 @@
  *
  */
 
- /**
- * @author Thomas Schmid
- */
- 
-configuration MoteClockC
-{
-  provides 
-  {
-      interface Init as MoteClockInit;
-  }
-
-}
-
-implementation
-
-{
-  components MoteClockP;
-  
-  MoteClockInit = MoteClockP;
-
+interface PlatformReset {
+  async command void reset();
 }

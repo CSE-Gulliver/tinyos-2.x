@@ -25,7 +25,7 @@
  * @author Thomas Schmid
  */
 
-#include <stm32hardware.h>
+#include <stm32f4hardware.h>
 
 generic configuration HplSTM32GeneralIOPortP (uint32_t port_addr)
 {
@@ -52,22 +52,22 @@ generic configuration HplSTM32GeneralIOPortP (uint32_t port_addr)
 implementation
 {
   components 
-  new HplSTM32GeneralIOPinP (port_addr, 0) as Bit0,
-  new HplSTM32GeneralIOPinP (port_addr, 1) as Bit1,
-  new HplSTM32GeneralIOPinP (port_addr, 2) as Bit2,
-  new HplSTM32GeneralIOPinP (port_addr, 3) as Bit3,
-  new HplSTM32GeneralIOPinP (port_addr, 4) as Bit4,
-  new HplSTM32GeneralIOPinP (port_addr, 5) as Bit5,
-  new HplSTM32GeneralIOPinP (port_addr, 6) as Bit6,
-  new HplSTM32GeneralIOPinP (port_addr, 7) as Bit7,
-  new HplSTM32GeneralIOPinP (port_addr, 8) as Bit8,
-  new HplSTM32GeneralIOPinP (port_addr, 9) as Bit9,
-  new HplSTM32GeneralIOPinP (port_addr, 10) as Bit10,
-  new HplSTM32GeneralIOPinP (port_addr, 11) as Bit11,
-  new HplSTM32GeneralIOPinP (port_addr, 12) as Bit12,
-  new HplSTM32GeneralIOPinP (port_addr, 13) as Bit13,
-  new HplSTM32GeneralIOPinP (port_addr, 14) as Bit14,
-  new HplSTM32GeneralIOPinP (port_addr, 15) as Bit15;
+  new HplSTM32GeneralIOPinP (port_addr, GPIO_Pin_0) as Bit0,
+  new HplSTM32GeneralIOPinP (port_addr, GPIO_Pin_1) as Bit1,
+  new HplSTM32GeneralIOPinP (port_addr, GPIO_Pin_2) as Bit2,
+  new HplSTM32GeneralIOPinP (port_addr, GPIO_Pin_3) as Bit3,
+  new HplSTM32GeneralIOPinP (port_addr, GPIO_Pin_4) as Bit4,
+  new HplSTM32GeneralIOPinP (port_addr, GPIO_Pin_5) as Bit5,
+  new HplSTM32GeneralIOPinP (port_addr, GPIO_Pin_6) as Bit6,
+  new HplSTM32GeneralIOPinP (port_addr, GPIO_Pin_7) as Bit7,
+  new HplSTM32GeneralIOPinP (port_addr, GPIO_Pin_8) as Bit8,
+  new HplSTM32GeneralIOPinP (port_addr, GPIO_Pin_9) as Bit9,
+  new HplSTM32GeneralIOPinP (port_addr, GPIO_Pin_10) as Bit10,
+  new HplSTM32GeneralIOPinP (port_addr, GPIO_Pin_11) as Bit11,
+  new HplSTM32GeneralIOPinP (port_addr, GPIO_Pin_12) as Bit12,
+  new HplSTM32GeneralIOPinP (port_addr, GPIO_Pin_13) as Bit13,
+  new HplSTM32GeneralIOPinP (port_addr, GPIO_Pin_14) as Bit14,
+  new HplSTM32GeneralIOPinP (port_addr, GPIO_Pin_15) as Bit15;
 
   Pin0 = Bit0;
   Pin1 = Bit1;
