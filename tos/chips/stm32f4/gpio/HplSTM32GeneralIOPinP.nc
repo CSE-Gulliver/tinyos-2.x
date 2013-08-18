@@ -74,7 +74,7 @@ implementation
         GPIO_TypeDef* port = (GPIO_TypeDef*)port_addr;
 
         GPIO_InitTypeDef gpioi = {
-            .GPIO_Pin=(uint16_t) 1 << bit, // select the pin
+            .GPIO_Pin=((uint32_t) 1 << bit), // select the pin
             .GPIO_Speed= GPIO_Speed_100MHz,
             .GPIO_Mode= GPIO_Mode_IN,
             .GPIO_PuPd= GPIO_PuPd_NOPULL,
@@ -91,7 +91,7 @@ implementation
         GPIO_TypeDef* port = (GPIO_TypeDef*)port_addr;
 
         GPIO_InitTypeDef gpioi = {
-            .GPIO_Pin=(uint16_t) 1 << bit, // select the pin
+            .GPIO_Pin=((uint32_t) 1 << bit), // select the pin
             .GPIO_Speed=GPIO_Speed_100MHz,
             .GPIO_Mode= GPIO_Mode_OUT,
             .GPIO_PuPd= GPIO_PuPd_NOPULL,

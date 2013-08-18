@@ -46,6 +46,8 @@ inline __nesc_atomic_t __nesc_atomic_start(void) @spontaneous()
 {
   uint32_t result = 0;
   uint32_t temp = 0;
+  
+//  __set_PRIMASK(1);
 /*
   asm volatile (
         "mrs %0,basepri\n\t"
@@ -53,18 +55,21 @@ inline __nesc_atomic_t __nesc_atomic_start(void) @spontaneous()
         "msr basepri,%3"
         : "=r" (result) , "=r" (temp)
         : "0" (result) , "1" (temp) , "i" (ARM_BASEPRI_INT_MASK)
-        );
-  asm volatile("" : : : "memory"); // ensure atomic section effect visibility 
-  */
+        );*/
+//  asm volatile("" : : : "memory"); // ensure atomic section effect visibility 
+  
   return result;
 }
 
 inline void __nesc_atomic_end(__nesc_atomic_t oldState) @spontaneous()
 {
   uint32_t  statusReg = 0;
+//  __set_PRIMASK(0);
   //make sure that we only mess with the INT bit
-  /*
-  asm volatile("" : : : "memory"); // ensure atomic section effect visibility 
+  
+//  asm volatile("" : : : "memory"); // ensure atomic section effect visibility 
+
+/*
   oldState &= ARM_BASEPRI_INT_MASK;
   asm volatile (
         "mrs %0,basepri\n\t"
@@ -73,8 +78,8 @@ inline void __nesc_atomic_end(__nesc_atomic_t oldState) @spontaneous()
         "msr basepri, %1"
         : "=r" (statusReg)
         : "0" (statusReg),"i" (ARM_BASEPRI_INT_MASK), "r" (oldState)
-        );
-        */
+        );*/
+        
   return;
 }
 
@@ -91,6 +96,7 @@ inline void __nesc_enable_interrupt() {
            */
   return;
 }
+
 
 inline void __nesc_disable_interrupt() {
   uint32_t statusReg = 0;

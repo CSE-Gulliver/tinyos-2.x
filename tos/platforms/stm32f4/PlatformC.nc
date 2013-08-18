@@ -25,11 +25,12 @@ configuration PlatformC
 
 implementation
 {
-  components PlatformP, MoteClockC, McuSleepC, HplSTM32InterruptM;
+//  components PlatformP, MoteClockC, McuSleepC, HplSTM32InterruptM;
+  components PlatformP, MoteClockC, McuSleepC;
 
   Init = PlatformP;
   PlatformReset = PlatformP;
-  PlatformP.Interrupt -> HplSTM32InterruptM;
+//  PlatformP.Interrupt -> HplSTM32InterruptM;
   PlatformP.MoteClockInit -> MoteClockC;
   PlatformP.McuSleepInit -> McuSleepC;
   McuSleepC.MoteClockInit -> MoteClockC;

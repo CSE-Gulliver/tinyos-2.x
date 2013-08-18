@@ -38,7 +38,7 @@ module PlatformP {
         interface Init as MoteInit;
         interface Init as MoteClockInit;
         interface Init as McuSleepInit;
-        interface HplSTM32Interrupt as Interrupt;
+//        interface HplSTM32Interrupt as Interrupt;
     }
 }
 implementation {
@@ -112,10 +112,10 @@ implementation {
         while(delay) delay--;
     }
 
-    async event void Interrupt.fired(void)
-{
+//    async event void Interrupt.fired(void)
+//{
 
-}
+//}
 
 }
 

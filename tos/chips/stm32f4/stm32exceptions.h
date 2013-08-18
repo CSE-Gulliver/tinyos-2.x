@@ -38,6 +38,9 @@
 	#define DEFAULT_EXCEPTION_HANDLER(handler, name, number, address) unexpected_exception(name, address);
 #endif
 
+#ifdef TESTEXECEPTION
+
+
 /* [0x08] NMI Exception (from the RCC Clock Security System) */
 void NMIException(void);
 
@@ -197,5 +200,6 @@ void EXTI15_10_IRQHandler(void);
 
 /* [0xE8] USB Wake Up Interrupt (EXTI Line 18) */
 void USBWakeUp_IRQHandler(void);
+#endif
 
 #endif /* __STM32EXCEPTIONS_H */
