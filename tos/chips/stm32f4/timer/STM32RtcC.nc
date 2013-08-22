@@ -40,7 +40,8 @@ implementation
 {
 
     norace uint32_t last_interval;
-    norace uint32_t system_time;
+   norace uint32_t system_time;
+   static volatile uint32_t fire_time=0;
     bool running;
     
     volatile uint32_t wake_up_interval;
@@ -51,7 +52,7 @@ implementation
     static NVIC_InitTypeDef NVIC_InitStructure={
 	
 		.NVIC_IRQChannel = RTC_WKUP_IRQn,
-		.NVIC_IRQChannelPreemptionPriority = 1,
+		.NVIC_IRQChannelPreemptionPriority = 0,
 		.NVIC_IRQChannelSubPriority = 0,
 		.NVIC_IRQChannelCmd = ENABLE,		
 		
@@ -125,8 +126,13 @@ implementation
             RTC_ITConfig(RTC_IT_WUT, ENABLE);
             RTC_WakeUpCmd(ENABLE);
 //            RTC_WaitForLastTask();
+			}
+
+	/*SysTick->CTRL  = SysTick_CTRL_CLKSOURCE_Msk |
+                   SysTick_CTRL_TICKINT_Msk   |
+                   SysTick_CTRL_ENABLE_Msk; */
             running = TRUE;
-        }
+//        }
     }
 
     void disableInterrupt()
@@ -140,8 +146,13 @@ implementation
               RTC_ITConfig(RTC_IT_WUT, DISABLE);
               RTC_WakeUpCmd(DISABLE);
 //            RTC_WaitForLastTask();
+			}
+ 			/*SysTick->CTRL  = SysTick_CTRL_CLKSOURCE_Msk |
+                   SysTick_CTRL_TICKINT_Msk   |
+                   !SysTick_CTRL_ENABLE_Msk;   */ 
               running = FALSE;
-        }
+              
+//        }
     }
 
 
@@ -149,9 +160,15 @@ implementation
     {
      	init_rtc();
      	init_rtc_exti();
-		
+/*
+		if (SysTick_Config(SystemCoreClock / 1000)) {
+		// Capture error
+			while (1) {};
+		}
+*/		
+
 		atomic {
-      		system_time=0;  
+      		system_time=0;
       		last_interval=0;
 
       	}
@@ -176,6 +193,7 @@ implementation
 
     async command void Alarm.startAt( uint32_t t0, uint32_t dt )
     {
+    	
        	disableInterrupt();
 		NVIC_Init(&NVIC_InitStructure);
 		{
@@ -183,12 +201,17 @@ implementation
             uint32_t elapsed = now - t0;
 //            now = RTC_GetCounter();
             now = system_time+last_interval-RTC_GetWakeUpCounter();
+//            now = call Alarm.getNow();
             if( elapsed >= dt )
             {
                 // let the timer expire at the next tic of the RTC!
                 
              	wake_up_interval=0x00;
-                atomic system_time = now+1;
+             	atomic system_time = now+1;
+//				__disable_irq();
+//                fire_time = now+1;
+//				__enable_irq();
+//                system_time = now+1;
 //                RTC_WaitForLastTask();
             }
             else
@@ -198,13 +221,20 @@ implementation
                 {
                    wake_up_interval=0x00;
                     atomic system_time = now+1;
+                    
+//                    atomic system_time = now+1;
+//					fire_time = now+1;
+//                     system_time = now+1;
 //                    RTC_WaitForLastTask();
                 }
                 else
                 {
 //                    RTC_SetAlarm(now+remaining); 
                   	wake_up_interval=remaining; 
-                    atomic system_time = now+remaining;
+                  	 atomic system_time = now+remaining;
+//                    atomic system_time = now+remaining;
+//                     fire_time = now+remaining;
+//                     system_time = now+remaining;
 //                    RTC_WaitForLastTask();
                 }
             }
@@ -218,6 +248,7 @@ implementation
     {
         uint32_t c;
        	c = system_time+last_interval-RTC_GetWakeUpCounter();
+//        c = system_time;
         return c;
     }
 
@@ -234,6 +265,7 @@ implementation
     async command bool Counter.isOverflowPending()
     {
         return (system_time<0);
+//        return;
     }
 
     async command void Counter.clearOverflow()
@@ -255,7 +287,24 @@ implementation
     /**
      * This is the interrupt handler defined in stm32-vectors.c.
      */
-     
+     /*
+     void SysTick_Handler(void) @C() @spontaneous()
+     {
+		system_time++;
+		
+		if (system_time%1000==0){
+			GPIO_ToggleBits(GPIOD, GPIO_Pin_15);
+		}
+		
+		if (system_time>=fire_time){
+			
+			call Alarm.stop();
+            signal Alarm.fired();
+		}
+		
+     	
+     }*/
+    
     void RTC_WKUP_IRQHandler(void) @C() @spontaneous() 
     {
     	    
@@ -263,6 +312,7 @@ implementation
         {
             // interrupt gets cleared when the timer is stopped in
             // Alarm.stop()
+            
             RTC_ClearITPendingBit(RTC_IT_WUT);
 	   		EXTI_ClearITPendingBit(EXTI_Line22);
 	   		
@@ -278,6 +328,6 @@ implementation
         }
 
     }
-
+	
 }
 

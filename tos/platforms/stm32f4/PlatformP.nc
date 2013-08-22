@@ -46,7 +46,11 @@ implementation {
     command error_t Init.init() {
         // Initialize the gpio pints for lowest state possible
         GPIO_InitTypeDef GPIO_InitStructure;
+        
+//        USART_InitTypeDef USART_InitStructure;
+        
    	  	// GPIOD Periph clock enable
+//		RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_GPIOA, ENABLE);
 		RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_GPIOD, ENABLE);
     
         GPIO_InitStructure.GPIO_Pin = GPIO_Pin_All;
@@ -71,7 +75,7 @@ implementation {
         GPIOC->ODR = 0;
         GPIO_Init(GPIOD, &GPIO_InitStructure);
         GPIOD->ODR = 0;
-
+        
         *NVIC_CCR = *NVIC_CCR | 0x200; /* Set STKALIGN in NVIC */
 		
         // Init clock system

@@ -38,7 +38,7 @@ module LedsP @safe() {
   uses {
     interface GeneralIO as Led0;
     interface GeneralIO as Led1;
-    interface GeneralIO as Led2;
+//    interface GeneralIO as Led2;
   }
 }
 implementation {
@@ -47,10 +47,10 @@ implementation {
       dbg("Init", "LEDS: initialized.\n");
       call Led0.makeOutput();
       call Led1.makeOutput();
-      call Led2.makeOutput();
+//      call Led2.makeOutput();
       call Led0.set();
       call Led1.set();
-      call Led2.set();
+//      call Led2.set();
     }
     return SUCCESS;
   }
@@ -89,7 +89,7 @@ implementation {
     call Led1.toggle();
     DBGLED(1);
   }
-
+/*
   async command void Leds.led2On() {
     call Led2.clr();
     DBGLED(2);
@@ -104,7 +104,7 @@ implementation {
     call Led2.toggle();
     DBGLED(2);
   }
-
+*/
   async command uint8_t Leds.get() {
     uint8_t rval;
     atomic {
@@ -115,9 +115,10 @@ implementation {
       if (!call Led1.get()) {
 	rval |= LEDS_LED1;
       }
+      /*
       if (!call Led2.get()) {
 	rval |= LEDS_LED2;
-      }
+      }*/
     }
     return rval;
   }
@@ -136,12 +137,12 @@ implementation {
       else {
 	call Leds.led1Off();
       }
-      if (val & LEDS_LED2) {
+      /*if (val & LEDS_LED2) {
 	call Leds.led2On();
       }
       else {
 	call Leds.led2Off();
-      }
+      }*/
     }
   }
 }

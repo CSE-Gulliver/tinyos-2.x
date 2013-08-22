@@ -65,7 +65,7 @@ implementation
         // if the bit is set, then reset through the BSRR, if it is reset,
         // then set it.
 //        *PERIPHERAL_BIT(port->ODR, bit) ^= 1;
- 		GPIO_ToggleBits(GPIOD, GPIO_Pin_15);
+ 		
 		GPIO_ToggleBits(port,bit);
         //port->BSRR = 1 << (bit << ((port->ODR >> bit) & 0x01)); 
     }

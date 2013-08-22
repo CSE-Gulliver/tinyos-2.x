@@ -63,6 +63,9 @@ implementation {
     }
   
   async command void McuSleep.sleep() {
+  		
+
+  	
       /*
        * Some notes ont he power management:
        * - Turning off the high frequency clocks and PLL saves a lot of energy
@@ -80,13 +83,13 @@ implementation {
       //*PERIPHERAL_BIT(GPIOC->ODR, 9) = 1;
 
       // slow down the clocks...
-      //RCC_PCLK2Config(RCC_HCLK_Div16);
-      //RCC_PCLK1Config(RCC_HCLK_Div16);
-      /*
+      RCC_PCLK2Config(RCC_HCLK_Div16);
+      RCC_PCLK1Config(RCC_HCLK_Div16);
+      
       // disable peripheral clocks
-      RCC_APB2PeriphClockCmd(RCC_APB2Periph_AFIO | RCC_APB2Periph_GPIOA, DISABLE);
-      RCC_AHBPeriphClockCmd(RCC_AHBPeriph_FLITF | RCC_AHBPeriph_SRAM, DISABLE);
-
+//      RCC_APB2PeriphClockCmd(RCC_APB2Periph_AFIO | RCC_APB2Periph_GPIOA, DISABLE);
+//      RCC_AHBPeriphClockCmd(RCC_AHBPeriph_FLITF | RCC_AHBPeriph_SRAM, DISABLE);
+	  RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_GPIOD, DISABLE);
       // clock the system from internal RC
       RCC_HSICmd(ENABLE);
       // wait until the HSI is ready
@@ -100,7 +103,7 @@ implementation {
       // instabilities, and the MCU might not come back from sleep!
       RCC_HCLKConfig(RCC_SYSCLK_Div64);
 
-
+	  __enable_irq();
 
       //*PERIPHERAL_BIT(GPIOC->ODR, 8) = 0;
       // for now, we just put the MCU into SLEEP mode. More sophisticated
@@ -128,7 +131,18 @@ implementation {
       while(RCC_GetFlagStatus(RCC_FLAG_HSERDY) == RESET);
 
       // 3. Init PLL
-      RCC_PLLConfig(RCC_PLLSource_HSE_Div1,RCC_PLLMul_9); // 72MHz
+//      RCC_PLLConfig(RCC_PLLSource_HSE_Div1,RCC_PLLMul_9); // 72MHz
+
+		/* PCLK2 = HCLK / 2*/
+		RCC->CFGR |= RCC_CFGR_PPRE2_DIV2;
+
+		/* PCLK1 = HCLK / 4*/
+		RCC->CFGR |= RCC_CFGR_PPRE1_DIV4;
+
+		/* Configure the main PLL */
+		RCC->PLLCFGR = PLL_M | (PLL_N << 6) | (((PLL_P >> 1) -1) << 16) |
+				(RCC_PLLCFGR_PLLSRC_HSE) | (PLL_Q << 24);
+
 
       //  RCC_PLLConfig(RCC_PLLSource_HSE_Div2,RCC_PLLMul_9); // 36MHz
       RCC_PLLCmd(ENABLE);
@@ -137,11 +151,13 @@ implementation {
       while(RCC_GetFlagStatus(RCC_FLAG_PLLRDY) == RESET);
       RCC_SYSCLKConfig(RCC_SYSCLKSource_PLLCLK);
 
-      RCC_APB2PeriphClockCmd(RCC_APB2Periph_AFIO | RCC_APB2Periph_GPIOC | RCC_APB2Periph_GPIOA, ENABLE);
-      RCC_AHBPeriphClockCmd(RCC_AHBPeriph_FLITF | RCC_AHBPeriph_SRAM, ENABLE);
+	  RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_GPIOD, ENABLE);
+
+//      RCC_APB2PeriphClockCmd(RCC_APB2Periph_AFIO | RCC_APB2Periph_GPIOC | RCC_APB2Periph_GPIOA, ENABLE);
+//      RCC_AHBPeriphClockCmd(RCC_AHBPeriph_FLITF | RCC_AHBPeriph_SRAM, ENABLE);
 
       //*PERIPHERAL_BIT(GPIOC->ODR, 9) = 0;
-*/
+
       return;
   }
 

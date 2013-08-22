@@ -75,18 +75,18 @@ interface Leds {
   /**
    * Turn on LED 2. The color of this LED depends on the platform.
    */
-  async command void led2On();
+//  async command void led2On();
 
   /**
    * Turn off LED 2. The color of this LED depends on the platform.
    */
-  async command void led2Off();
+//  async command void led2Off();
 
    /**
    * Toggle LED 2; if it was off, turn it on, if was on, turn it off.
    * The color of this LED depends on the platform.
    */
-  async command void led2Toggle();
+//  async command void led2Toggle();
 
 
   /**

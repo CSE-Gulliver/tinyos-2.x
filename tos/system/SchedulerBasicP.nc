@@ -136,12 +136,13 @@ implementation
   }
 
   command void Scheduler.taskLoop()
-  {
+  { 
+    
     for (;;)
     {
       uint8_t nextTask;
 
-      atomic
+//      atomic
       {
 	while ((nextTask = popTask()) == NO_TASK)
 	{

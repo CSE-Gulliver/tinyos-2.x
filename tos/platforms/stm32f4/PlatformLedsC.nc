@@ -30,7 +30,7 @@ configuration PlatformLedsC
   {
       interface GeneralIO as Led0;
       interface GeneralIO as Led1;
-      interface GeneralIO as Led2;
+//      interface GeneralIO as Led2;
   }
   uses 
   {
@@ -51,5 +51,5 @@ implementation
   
   Led0 = GeneralIOC.PortD12;
   Led1 = GeneralIOC.PortD13;
-  Led2 = GeneralIOC.PortD14;
+//  Led2 = GeneralIOC.PortA4;
 }

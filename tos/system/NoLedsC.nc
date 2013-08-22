@@ -47,10 +47,11 @@ implementation {
   async command void Leds.led1Off() {}
   async command void Leds.led1Toggle() {}
 
+/*
   async command void Leds.led2On() {}
   async command void Leds.led2Off() {}
   async command void Leds.led2Toggle() {}
-
+*/
   async command uint8_t Leds.get() {return 0;}
   async command void Leds.set(uint8_t val) {}
 }
