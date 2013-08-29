@@ -160,13 +160,13 @@ void TIM1_TRG_COM_IRQHandler(void);
 void TIM1_CC_IRQHandler(void);
 
 /* [0xB0] TIM2 Interrupt */
-//void TIM2_IRQHandler(void);
+void TIM2_IRQHandler(void);
 
 /* [0xB4] TIM3 Interrupt */
 //void TIM3_IRQHandler(void);
 
 /* [0xB8] TIM4 Interrupt */
-void TIM4_IRQHandler(void);
+//void TIM4_IRQHandler(void);
 
 /* [0xBC] I2C1 Event Interrupt */
 void I2C1_EV_IRQHandler(void);

@@ -96,10 +96,6 @@ implementation
 
   void set_alarm()
   {
-  	
- 	
-  	static uint32_t i=0;
-  	  
             	
     to_size_type now = call Counter.get(), expires, remaining;
     
@@ -108,9 +104,6 @@ implementation
 	
     expires = m_t0 + m_dt;
 	
-    i++; 
-    
-    	 
     /* The cast is necessary to get correct wrap-around arithmetic */
     remaining = (to_size_type)(expires - now);
 	now = call Counter.get();
@@ -125,12 +118,7 @@ implementation
       }else{
 		if (expires >= m_t0 || // didn't wrap so < now
 	   	 expires <= now)
-	 	 {remaining = 0; 
-	 	  if ( i==2&&(m_t0-now)>32769){
-    			GPIO_ToggleBits(GPIOD,GPIO_Pin_15);
-    		}	
-      		
-	 	 }	 
+	 	 {remaining = 0;}	 
 
       }
     
@@ -153,11 +141,10 @@ implementation
 
   async command void Alarm.startAt(to_size_type t0, to_size_type dt)
   {
-//    atomic
+    atomic
     {
       m_t0 = t0;
       m_dt = dt;
-      GPIO_ToggleBits(GPIOD,GPIO_Pin_13);
       set_alarm();
     }
   }
@@ -169,7 +156,7 @@ implementation
 
   async event void AlarmFrom.fired()
   {
-//    atomic
+    atomic
     {
       if(m_dt == 0)
       {
