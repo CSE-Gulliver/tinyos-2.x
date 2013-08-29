@@ -81,7 +81,7 @@ implementation
   async command to_size_type Counter.get()
   {
     to_size_type rv = 0;
-//    atomic
+    atomic
     {
       upper_count_type high = m_upper;
       from_size_type low = call CounterFrom.get();
@@ -121,7 +121,7 @@ implementation
 
   async command void Counter.clearOverflow()
   {
-//    atomic
+    atomic
     {
       if (call Counter.isOverflowPending())
       {
@@ -136,6 +136,7 @@ implementation
 //    atomic
     {
       m_upper++;
+      
 //      call CounterFrom.clearOverflow();
       if ((m_upper & OVERFLOW_MASK) == 0)
 		signal Counter.overflow();

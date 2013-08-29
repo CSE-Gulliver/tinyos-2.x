@@ -41,18 +41,64 @@
 
 typedef uint32_t __nesc_atomic_t;
 
+
+
+inline void __nesc_enable_interrupt() {
+  uint32_t statusReg = 0;
+  
+  
+  TIM_ITConfig(TIM3, TIM_IT_Update, ENABLE);	  
+  TIM_ITConfig(TIM2, TIM_IT_Update, ENABLE);	  
+//  __enable_irq();
+/*
+  if (SysTick_Config(SystemCoreClock / 1000)) {
+		// Capture error
+		while (1) {};
+	}*/
+  
+/*s
+  asm volatile (
+           "mrs %0,basepri\n\t"
+           "bic %0,%1,#0xc0\n\t"
+           "msr basepri, %1"
+           : "=r" (statusReg)
+           : "0" (statusReg)
+           );
+           */
+  return;
+}
+
+
+inline void __nesc_disable_interrupt() {
+  uint32_t statusReg = 0;
+  
+  
+  TIM_ITConfig(TIM3, TIM_IT_Update, DISABLE);
+  TIM_ITConfig(TIM2, TIM_IT_Update, DISABLE);
+/*
+  asm volatile (
+        "mrs %0,basepri\n\t"
+        "orr %0,%1,#0xc0\n\t"
+        "msr basepri,%1\n\t"
+        : "=r" (statusReg)
+        : "0" (statusReg)
+        );
+        */
+  return;
+}
+
 //NOTE...at the moment, these functions will ONLY disable the IRQ...FIQ is left alone
 inline  __nesc_atomic_t __nesc_atomic_start(void) @spontaneous()
 {
   uint32_t result = 0;
-  uint32_t temp = 0;
+//  uint32_t temp = 0;
 // CPU_IntDis();
 // __set_PRIMASK(1);
 // __set_FAULTMASK(1);
 
-
+ __nesc_disable_interrupt();
 // __disable_irq();
-   TIM_ITConfig(TIM3, TIM_IT_Update, DISABLE);
+   
 
 //asm volatile("" : : : "memory"); // ensure atomic section effect visibility 
 
@@ -81,7 +127,7 @@ inline  void __nesc_atomic_end(__nesc_atomic_t oldState) @spontaneous()
 		// Capture error
 		while (1) {};
   }*/
-  TIM_ITConfig(TIM3, TIM_IT_Update, ENABLE);	
+__nesc_enable_interrupt();
 //	__enable_irq();
   
 /*
@@ -97,45 +143,6 @@ inline  void __nesc_atomic_end(__nesc_atomic_t oldState) @spontaneous()
    */     
   return;
 }
-
-inline void __nesc_enable_interrupt() {
-  uint32_t statusReg = 0;
-  
-//  __enable_irq();
-/*
-  if (SysTick_Config(SystemCoreClock / 1000)) {
-		// Capture error
-		while (1) {};
-	}*/
-  
-/*s
-  asm volatile (
-           "mrs %0,basepri\n\t"
-           "bic %0,%1,#0xc0\n\t"
-           "msr basepri, %1"
-           : "=r" (statusReg)
-           : "0" (statusReg)
-           );
-           */
-  return;
-}
-
-
-inline void __nesc_disable_interrupt() {
-  uint32_t statusReg = 0;
-/*
-  asm volatile (
-        "mrs %0,basepri\n\t"
-        "orr %0,%1,#0xc0\n\t"
-        "msr basepri,%1\n\t"
-        : "=r" (statusReg)
-        : "0" (statusReg)
-        );
-        */
-  return;
-}
-
-
 
 typedef uint8_t mcu_power_t @combine("mcombine");
 

@@ -62,6 +62,14 @@ implementation {
         return SUCCESS;
     }
   
+  //It is used to compensate the effect of disabling interrupts in 
+  void enable_interrupts(void){
+  	
+	  TIM_ITConfig(TIM3, TIM_IT_Update, ENABLE);	  
+ 	  TIM_ITConfig(TIM2, TIM_IT_Update, ENABLE);	
+  }
+  
+  
   async command void McuSleep.sleep() {
   	
       /*
@@ -100,9 +108,9 @@ implementation {
       // FIXME: increasing this further above 64 somehow introduces
       // instabilities, and the MCU might not come back from sleep!
 //      RCC_HCLKConfig(RCC_SYSCLK_Div64);
-	TIM_ITConfig(TIM3, TIM_IT_Update, ENABLE);
+//	TIM_ITConfig(TIM3, TIM_IT_Update, ENABLE);
 //	  __enable_irq();
-
+		enable_interrupts();
       //*PERIPHERAL_BIT(GPIOC->ODR, 8) = 0;
       // for now, we just put the MCU into SLEEP mode. More sophisticated
       // things later...

@@ -173,6 +173,7 @@ implementation
 
   async event void Counter.overflow()
   {
+  	return;
   }
 
   default async event void Alarm.fired()

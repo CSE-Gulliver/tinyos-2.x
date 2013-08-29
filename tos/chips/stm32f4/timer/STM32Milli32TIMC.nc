@@ -20,7 +20,7 @@
  */
 
 /**
- * It provides provides alarm with Macro granuality using the STM32's TIM.
+ * It provides provides alarm with Milli resolution using the STM32's TIM.
  *
  * @author Tao Li
  */
@@ -28,57 +28,53 @@
 #include "stm32f4xx_tim.h"
 #include "stm32f4xx_it.h"
 
-module STM16TIMC @safe()
+module STM32Milli32TIMC @safe()
 {
     provides {
         interface Init;
-        interface Alarm<TMicro,uint16_t> as Alarm;
-        interface Counter<TMicro,uint16_t> as Counter;
-//        interface LocalTime<TMilli> as LocalTime;
+        interface Alarm<TMilli,uint32_t> as Alarm;
+        interface Counter<TMilli,uint32_t> as Counter;
+        interface LocalTime<TMilli> as LocalTime;
     }
 }
 
 implementation
 {
-//    norace uint32_t last_interval;
-    norace uint16_t alarm;
-//    norace uint16_t current_system_time;
-//   	norace uint32_t previous_system_time;
+    norace uint32_t alarm;
     bool running;
-//    bool overflow;
         
-    static TIM_TimeBaseInitTypeDef TIM_TimeBaseStructure = {
-		
+    static TIM_TimeBaseInitTypeDef TIM_TimeBaseStructure = 
+    {
 		.TIM_Period = 1,  
-		.TIM_Prescaler = 80 - 1, // Down to 1050000 Hz ~= 1048576 Hz (adjust per your clock)
-		.TIM_ClockDivision = TIM_CKD_DIV1,
+		.TIM_Prescaler = 41016-1, // Down to 1024 Hz (adjust per your clock) with TIM_ClockDivision = TIM_CKD_DIV4
+		.TIM_ClockDivision = TIM_CKD_DIV1, 
 		.TIM_CounterMode = TIM_CounterMode_Up,	
-	
 	};
     
     static void timer_clock_init(void)
     {
-		RCC_APB1PeriphClockCmd(RCC_APB1Periph_TIM4, ENABLE);
-		RCC_APB1PeriphClockCmd(RCC_APB1Periph_TIM3, ENABLE);
+		RCC_APB1PeriphClockCmd(RCC_APB1Periph_TIM5, ENABLE);
+		RCC_APB1PeriphClockCmd(RCC_APB1Periph_TIM2, ENABLE);
 	}
     
 
-	static void init_free_timer(void){
+	static void init_free_timer(void)
+	{
 		//TIM4 works as a free timer to provide the information of current clock
 		//the expiration of the counter means that there is an overflow
-		TIM_DeInit(TIM4);
+		TIM_DeInit(TIM5);
 		
-		TIM_TimeBaseStructure.TIM_Period=(uint16_t)0xFFFF;
+		TIM_TimeBaseStructure.TIM_Period=(uint32_t)0xFFFFFFFF;
 		
-		TIM_TimeBaseInit(TIM4, &TIM_TimeBaseStructure);
-		TIM_ITConfig(TIM4, TIM_IT_Update, ENABLE);
+		TIM_TimeBaseInit(TIM5, &TIM_TimeBaseStructure);
+		TIM_ITConfig(TIM5, TIM_IT_Update, ENABLE);
 	
 	}
 	
 	static void init_alarm_timer(void){
 		
-		TIM_DeInit(TIM3);
-		TIM_TimeBaseInit(TIM3, &TIM_TimeBaseStructure);
+		TIM_DeInit(TIM2);
+		TIM_TimeBaseInit(TIM2, &TIM_TimeBaseStructure);
 		
 	}
 	
@@ -86,32 +82,33 @@ implementation
 
 		NVIC_InitTypeDef conf;
 
-		conf.NVIC_IRQChannel = TIM4_IRQn;
+		conf.NVIC_IRQChannel = TIM5_IRQn;
 		conf.NVIC_IRQChannelSubPriority = 0;
-		conf.NVIC_IRQChannelPreemptionPriority = 0;
+		conf.NVIC_IRQChannelPreemptionPriority = 1;
 		conf.NVIC_IRQChannelCmd = ENABLE;
 		NVIC_Init(&conf);
 		
-		conf.NVIC_IRQChannel = TIM3_IRQn;
+		conf.NVIC_IRQChannel = TIM2_IRQn;
 		conf.NVIC_IRQChannelSubPriority = 1;
-		conf.NVIC_IRQChannelPreemptionPriority = 0;
+		conf.NVIC_IRQChannelPreemptionPriority = 1;
 		conf.NVIC_IRQChannelCmd = ENABLE;
 		NVIC_Init(&conf);
 		
 	}
 	
-	static void set_alarm_interval(uint16_t interval){
+	static void set_alarm_interval(uint32_t interval)
+	{
 
-		TIM3 -> CNT = 1;
-		TIM3 -> ARR = (uint16_t)interval-1; 
+		TIM2 -> CNT = 0;
+		TIM2 -> ARR = (uint16_t)interval-1; 
 	}
 		
     void enableInterrupt()
     {
         /* Enable the TIM Alarm Interrupt */
         atomic {
-             TIM_ITConfig(TIM3, TIM_IT_Update, ENABLE);
-             TIM_Cmd(TIM3,ENABLE);
+             TIM_ITConfig(TIM2, TIM_IT_Update, ENABLE);
+             TIM_Cmd(TIM2,ENABLE);
 		}           
 		running = TRUE;
     }
@@ -119,8 +116,8 @@ implementation
     void disableInterrupt()
     {
         atomic {
-            TIM_Cmd(TIM3,DISABLE);
-            TIM_ITConfig(TIM3, TIM_IT_Update, DISABLE);
+            TIM_Cmd(TIM2,DISABLE);
+            TIM_ITConfig(TIM2, TIM_IT_Update, DISABLE);
 		}
          running = FALSE;
               
@@ -138,11 +135,11 @@ implementation
 		atomic {
       		alarm=0;
       	}
-      	TIM_Cmd(TIM4,ENABLE);
+      	TIM_Cmd(TIM5,ENABLE);
         return SUCCESS;
     }
 
-    async command void Alarm.start( uint16_t dt )
+    async command void Alarm.start( uint32_t dt )
     {
         call Alarm.startAt( call Alarm.getNow(), dt );
     }
@@ -157,34 +154,34 @@ implementation
         return running;
     }
 
-    async command void Alarm.startAt( uint16_t t0, uint16_t dt )
+    async command void Alarm.startAt( uint32_t t0, uint32_t dt )
     {
     	
-        uint16_t interval;
+        uint32_t interval;
        	disableInterrupt();
 		{
 			
-			uint16_t now = call Alarm.getNow();
-            uint16_t elapsed = now - t0;
-            now = TIM4 -> CNT;
+			uint32_t now = call Alarm.getNow();
+            uint32_t elapsed = now - t0;
+            now = TIM5 -> CNT;
             
             if( elapsed >= dt )
             {
                 // let the timer expire at the next tic of the TIM!
-				interval=5;
+				interval=2;
 //            	atomic
-             	alarm = now+5;
+             	alarm = now+2;
 //             	atomic system_time = (uint64_t)now+1;
             }
             
             else
             {
-                uint16_t remaining = dt - elapsed;
+                uint32_t remaining = dt - elapsed;
                 if( remaining <= 1 )
                 {
-				   interval=5;
+				   interval=2;
 //				 atomic
-             	   alarm = now+5;
+             	   alarm = now+2;
 //                   atomic system_time = (uint64_t)now+1;
                 }
                 else
@@ -201,68 +198,68 @@ implementation
         }
     }
 
-    async command uint16_t Alarm.getNow()
+    async command uint32_t Alarm.getNow()
     {
-        uint16_t c;
-        c = TIM4->CNT;
+        uint32_t c;
+        c = TIM5->CNT;
         return c;
     }
 
-    async command uint16_t Alarm.getAlarm()
+    async command uint32_t Alarm.getAlarm()
     {
         return alarm;
     }
 
-    async command uint16_t Counter.get()
+    async command uint32_t Counter.get()
     {
         return call Alarm.getNow();
     }
 
     async command bool Counter.isOverflowPending()
     {
-        return TIM_GetITStatus(TIM4,TIM_IT_Update);
+        return TIM_GetITStatus(TIM5,TIM_IT_Update);
     }
 
     async command void Counter.clearOverflow()
     {
-		TIM_ClearITPendingBit(TIM3, TIM_IT_Update);
+		TIM_ClearITPendingBit(TIM5, TIM_IT_Update);
     }
 
-/*
+
     async command uint32_t LocalTime.get() {
         return call Alarm.getNow();
     }
-*/
+
     default async event void Counter.overflow() {
         return ;
     }
 
 
-    void TIM4_IRQHandler(void) @C() @spontaneous(){
+    void TIM5_IRQHandler(void) @C() @spontaneous(){
     	//entering this interrupt means that there is an overflow of timer
     	static uint32_t j=0;
-    	if (TIM_GetFlagStatus(TIM4, TIM_FLAG_Update) != RESET){
+    	if (TIM_GetFlagStatus(TIM5, TIM_FLAG_Update) != RESET){
     		
           		 j++;
            	if (j==1){
            		GPIO_SetBits(GPIOD,GPIO_Pin_15);
             	
             }
-			TIM4->SR = (uint16_t)~TIM_IT_Update;
+			TIM5->SR = (uint16_t)~TIM_IT_Update;
     		signal Counter.overflow();
     	
     	}
     } 
     
     
-    void TIM3_IRQHandler(void) @C() @spontaneous() 
+    void TIM2_IRQHandler(void) @C() @spontaneous() 
     {
-        if (TIM_GetFlagStatus(TIM3, TIM_FLAG_Update) != RESET){
+        if (TIM_GetFlagStatus(TIM2, TIM_FLAG_Update) != RESET){
         
             	call Alarm.stop();
             	signal Alarm.fired();
 		}
-       	TIM_ClearITPendingBit(TIM3, TIM_IT_Update);
+       	TIM_ClearITPendingBit(TIM2, TIM_IT_Update);
     }
 	
 }

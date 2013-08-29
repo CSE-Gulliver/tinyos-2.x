@@ -360,12 +360,12 @@ struct __sFILE {
 
   void *_cookie;
 
-  int (*_read)(struct _reent *arg_0x2af004232540, void *arg_0x2af0042327e0, char *arg_0x2af004232a80, int arg_0x2af004232ce8);
+  int (*_read)(struct _reent *arg_0x2b430c8a0540, void *arg_0x2b430c8a07e0, char *arg_0x2b430c8a0a80, int arg_0x2b430c8a0ce8);
 
-  int (*_write)(struct _reent *arg_0x2af004239418, void *arg_0x2af0042396b8, const char *arg_0x2af004239990, int arg_0x2af004239bf8);
+  int (*_write)(struct _reent *arg_0x2b430c8a7418, void *arg_0x2b430c8a76b8, const char *arg_0x2b430c8a7990, int arg_0x2b430c8a7bf8);
 
-  _fpos_t (*_seek)(struct _reent *arg_0x2af004238378, void *arg_0x2af004238618, _fpos_t arg_0x2af0042388c8, int arg_0x2af004238b30);
-  int (*_close)(struct _reent *arg_0x2af004236290, void *arg_0x2af004236530);
+  _fpos_t (*_seek)(struct _reent *arg_0x2b430c8a6378, void *arg_0x2b430c8a6618, _fpos_t arg_0x2b430c8a68c8, int arg_0x2b430c8a6b30);
+  int (*_close)(struct _reent *arg_0x2b430c8a4290, void *arg_0x2b430c8a4530);
 
 
   struct __sbuf _ub;
@@ -428,7 +428,7 @@ struct _reent {
 
   int __sdidinit;
 
-  void (*__cleanup)(struct _reent *arg_0x2af00423e5a8);
+  void (*__cleanup)(struct _reent *arg_0x2b430c8ac5a8);
 
 
   struct _Bigint *_result;
@@ -480,7 +480,7 @@ struct _reent {
   struct _atexit _atexit0;
 
 
-  void (**_sig_func)(int arg_0x2af004246b30);
+  void (**_sig_func)(int arg_0x2b430c8b4b30);
 
 
 
@@ -492,7 +492,7 @@ struct _reent {
 struct _reent;
 struct _reent;
 # 25 "/home/taoli/sat/lib/gcc/arm-none-eabi/4.8.2/../../../../arm-none-eabi/include/string.h" 3
-void *memset(void *arg_0x2af00425e868, int arg_0x2af00425ead0, size_t arg_0x2af00425ed78);
+void *memset(void *arg_0x2b430c8cc868, int arg_0x2b430c8ccad0, size_t arg_0x2b430c8ccd78);
 # 34 "/home/taoli/sat/lib/gcc/arm-none-eabi/4.8.2/../../../../arm-none-eabi/include/stdlib.h" 3
 #line 30
 typedef struct __nesc_unnamed4248 {
@@ -609,6 +609,8 @@ enum __nesc_unnamed4252 {
 };
 
 typedef uint8_t error_t  ;
+
+static inline error_t ecombine(error_t r1, error_t r2)  ;
 # 40 "/home/taoli/sat/lib/gcc/arm-none-eabi/4.8.2/include/stdarg.h" 3
 typedef __builtin_va_list __gnuc_va_list;
 # 19 "/home/taoli/sat/lib/gcc/arm-none-eabi/4.8.2/../../../../arm-none-eabi/include/machine/types.h" 3
@@ -2912,20 +2914,23 @@ typedef struct __nesc_unnamed4359 {
 NVIC_InitTypeDef;
 #line 159
 void NVIC_Init(NVIC_InitTypeDef *NVIC_InitStruct);
-# 94 "/home/taoli/workspace/PortingTinyOs/tinyos-2.x/tos/chips/stm32f4/stm32f4xx_it.h"
+# 92 "/home/taoli/workspace/PortingTinyOs/tinyos-2.x/tos/chips/stm32f4/stm32f4xx_it.h"
+void TIM2_IRQHandler(void );
+
 void TIM4_IRQHandler(void );
 # 42 "/home/taoli/workspace/PortingTinyOs/tinyos-2.x/tos/chips/stm32f4/stm32f4hardware.h"
 typedef uint32_t __nesc_atomic_t;
 
 
-__inline __nesc_atomic_t __nesc_atomic_start(void )  ;
-#line 72
-__inline void __nesc_atomic_end(__nesc_atomic_t oldState)  ;
-#line 101
+
 static __inline void __nesc_enable_interrupt();
-#line 124
+#line 72
 static __inline void __nesc_disable_interrupt();
-#line 140
+#line 91
+__inline __nesc_atomic_t __nesc_atomic_start(void )  ;
+#line 118
+__inline void __nesc_atomic_end(__nesc_atomic_t oldState)  ;
+#line 147
 typedef uint8_t mcu_power_t  ;
 # 29 "/home/taoli/workspace/PortingTinyOs/tinyos-2.x/tos/lib/timer/Timer.h"
 typedef struct __nesc_unnamed4360 {
@@ -2958,6 +2963,7 @@ enum __nesc_unnamed4363 {
   LEDS_LED7 = 1 << 7
 };
 typedef TMicro BlinkC$Timer0$precision_tag;
+typedef TMilli BlinkC$Timer1$precision_tag;
 typedef TMicro /*HilTimerMicroC.VirtTimersMicro32*/VirtualizeTimerC$0$precision_tag;
 typedef /*HilTimerMicroC.VirtTimersMicro32*/VirtualizeTimerC$0$precision_tag /*HilTimerMicroC.VirtTimersMicro32*/VirtualizeTimerC$0$TimerFrom$precision_tag;
 typedef /*HilTimerMicroC.VirtTimersMicro32*/VirtualizeTimerC$0$precision_tag /*HilTimerMicroC.VirtTimersMicro32*/VirtualizeTimerC$0$Timer$precision_tag;
@@ -2965,10 +2971,10 @@ typedef TMicro /*HilTimerMicroC.AlarmToTimerMicro32*/AlarmToTimerC$0$precision_t
 typedef /*HilTimerMicroC.AlarmToTimerMicro32*/AlarmToTimerC$0$precision_tag /*HilTimerMicroC.AlarmToTimerMicro32*/AlarmToTimerC$0$Alarm$precision_tag;
 typedef uint32_t /*HilTimerMicroC.AlarmToTimerMicro32*/AlarmToTimerC$0$Alarm$size_type;
 typedef /*HilTimerMicroC.AlarmToTimerMicro32*/AlarmToTimerC$0$precision_tag /*HilTimerMicroC.AlarmToTimerMicro32*/AlarmToTimerC$0$Timer$precision_tag;
-typedef TMicro STM16TIMC$Alarm$precision_tag;
-typedef uint16_t STM16TIMC$Alarm$size_type;
-typedef TMicro STM16TIMC$Counter$precision_tag;
-typedef uint16_t STM16TIMC$Counter$size_type;
+typedef TMicro STM32Micro16TIMC$Alarm$precision_tag;
+typedef uint16_t STM32Micro16TIMC$Alarm$size_type;
+typedef TMicro STM32Micro16TIMC$Counter$precision_tag;
+typedef uint16_t STM32Micro16TIMC$Counter$size_type;
 typedef TMicro /*CounterTMicro32C.TransformCounter*/TransformCounterC$0$to_precision_tag;
 typedef uint32_t /*CounterTMicro32C.TransformCounter*/TransformCounterC$0$to_size_type;
 typedef TMicro /*CounterTMicro32C.TransformCounter*/TransformCounterC$0$from_precision_tag;
@@ -2992,6 +2998,18 @@ typedef TMicro /*LocalTimeMicroC.CounterToLocalTimeC*/CounterToLocalTimeC$0$prec
 typedef /*LocalTimeMicroC.CounterToLocalTimeC*/CounterToLocalTimeC$0$precision_tag /*LocalTimeMicroC.CounterToLocalTimeC*/CounterToLocalTimeC$0$LocalTime$precision_tag;
 typedef /*LocalTimeMicroC.CounterToLocalTimeC*/CounterToLocalTimeC$0$precision_tag /*LocalTimeMicroC.CounterToLocalTimeC*/CounterToLocalTimeC$0$Counter$precision_tag;
 typedef uint32_t /*LocalTimeMicroC.CounterToLocalTimeC*/CounterToLocalTimeC$0$Counter$size_type;
+typedef TMilli /*HilTimerMilliC.VirtTimersMilli32*/VirtualizeTimerC$1$precision_tag;
+typedef /*HilTimerMilliC.VirtTimersMilli32*/VirtualizeTimerC$1$precision_tag /*HilTimerMilliC.VirtTimersMilli32*/VirtualizeTimerC$1$TimerFrom$precision_tag;
+typedef /*HilTimerMilliC.VirtTimersMilli32*/VirtualizeTimerC$1$precision_tag /*HilTimerMilliC.VirtTimersMilli32*/VirtualizeTimerC$1$Timer$precision_tag;
+typedef TMilli /*HilTimerMilliC.AlarmToTimerMilli32*/AlarmToTimerC$1$precision_tag;
+typedef /*HilTimerMilliC.AlarmToTimerMilli32*/AlarmToTimerC$1$precision_tag /*HilTimerMilliC.AlarmToTimerMilli32*/AlarmToTimerC$1$Alarm$precision_tag;
+typedef uint32_t /*HilTimerMilliC.AlarmToTimerMilli32*/AlarmToTimerC$1$Alarm$size_type;
+typedef /*HilTimerMilliC.AlarmToTimerMilli32*/AlarmToTimerC$1$precision_tag /*HilTimerMilliC.AlarmToTimerMilli32*/AlarmToTimerC$1$Timer$precision_tag;
+typedef TMilli STM32Milli32TIMC$LocalTime$precision_tag;
+typedef TMilli STM32Milli32TIMC$Alarm$precision_tag;
+typedef uint32_t STM32Milli32TIMC$Alarm$size_type;
+typedef TMilli STM32Milli32TIMC$Counter$precision_tag;
+typedef uint32_t STM32Milli32TIMC$Counter$size_type;
 # 51 "/home/taoli/workspace/PortingTinyOs/tinyos-2.x/tos/interfaces/Init.nc"
 static error_t PlatformP$Init$init(void );
 #line 51
@@ -3003,11 +3021,11 @@ static error_t McuSleepC$McuSleepInit$init(void );
 # 56 "/home/taoli/workspace/PortingTinyOs/tinyos-2.x/tos/interfaces/TaskBasic.nc"
 static error_t SchedulerBasicP$TaskBasic$postTask(
 # 45 "/home/taoli/workspace/PortingTinyOs/tinyos-2.x/tos/system/SchedulerBasicP.nc"
-uint8_t arg_0x2af004aef4c8);
+uint8_t arg_0x2b430d185cb0);
 # 64 "/home/taoli/workspace/PortingTinyOs/tinyos-2.x/tos/interfaces/TaskBasic.nc"
 static void SchedulerBasicP$TaskBasic$default$runTask(
 # 45 "/home/taoli/workspace/PortingTinyOs/tinyos-2.x/tos/system/SchedulerBasicP.nc"
-uint8_t arg_0x2af004aef4c8);
+uint8_t arg_0x2b430d185cb0);
 # 46 "/home/taoli/workspace/PortingTinyOs/tinyos-2.x/tos/interfaces/Scheduler.nc"
 static void SchedulerBasicP$Scheduler$init(void );
 #line 61
@@ -3018,10 +3036,14 @@ static bool SchedulerBasicP$Scheduler$runNextTask(void );
 static void BlinkC$Timer0$fired(void );
 # 49 "/home/taoli/workspace/PortingTinyOs/tinyos-2.x/tos/interfaces/Boot.nc"
 static void BlinkC$Boot$booted(void );
+# 72 "/home/taoli/workspace/PortingTinyOs/tinyos-2.x/tos/lib/timer/Timer.nc"
+static void BlinkC$Timer1$fired(void );
 # 51 "/home/taoli/workspace/PortingTinyOs/tinyos-2.x/tos/interfaces/Init.nc"
 static error_t LedsP$Init$init(void );
 # 56 "/home/taoli/workspace/PortingTinyOs/tinyos-2.x/tos/interfaces/Leds.nc"
 static void LedsP$Leds$led0Toggle(void );
+#line 72
+static void LedsP$Leds$led1Toggle(void );
 # 31 "/home/taoli/workspace/PortingTinyOs/tinyos-2.x/tos/interfaces/GeneralIO.nc"
 static void /*HplSTM32GeneralIOC.PortD.Bit12*/HplSTM32GeneralIOPinP$60$IO$toggle(void );
 
@@ -3031,7 +3053,7 @@ static void /*HplSTM32GeneralIOC.PortD.Bit12*/HplSTM32GeneralIOPinP$60$IO$makeOu
 #line 29
 static void /*HplSTM32GeneralIOC.PortD.Bit12*/HplSTM32GeneralIOPinP$60$IO$set(void );
 
-
+static void /*HplSTM32GeneralIOC.PortD.Bit13*/HplSTM32GeneralIOPinP$61$IO$toggle(void );
 
 
 
@@ -3045,11 +3067,11 @@ static void /*HilTimerMicroC.VirtTimersMicro32*/VirtualizeTimerC$0$TimerFrom$fir
 #line 72
 static void /*HilTimerMicroC.VirtTimersMicro32*/VirtualizeTimerC$0$Timer$default$fired(
 # 37 "/home/taoli/workspace/PortingTinyOs/tinyos-2.x/tos/lib/timer/VirtualizeTimerC.nc"
-uint8_t arg_0x2af004d3b020);
+uint8_t arg_0x2b430d39d020);
 # 53 "/home/taoli/workspace/PortingTinyOs/tinyos-2.x/tos/lib/timer/Timer.nc"
 static void /*HilTimerMicroC.VirtTimersMicro32*/VirtualizeTimerC$0$Timer$startPeriodic(
 # 37 "/home/taoli/workspace/PortingTinyOs/tinyos-2.x/tos/lib/timer/VirtualizeTimerC.nc"
-uint8_t arg_0x2af004d3b020, 
+uint8_t arg_0x2b430d39d020, 
 # 53 "/home/taoli/workspace/PortingTinyOs/tinyos-2.x/tos/lib/timer/Timer.nc"
 uint32_t dt);
 # 64 "/home/taoli/workspace/PortingTinyOs/tinyos-2.x/tos/interfaces/TaskBasic.nc"
@@ -3063,22 +3085,22 @@ static void /*HilTimerMicroC.AlarmToTimerMicro32*/AlarmToTimerC$0$Timer$startOne
 #line 67
 static void /*HilTimerMicroC.AlarmToTimerMicro32*/AlarmToTimerC$0$Timer$stop(void );
 # 98 "/home/taoli/workspace/PortingTinyOs/tinyos-2.x/tos/lib/timer/Alarm.nc"
-static STM16TIMC$Alarm$size_type STM16TIMC$Alarm$getNow(void );
+static STM32Micro16TIMC$Alarm$size_type STM32Micro16TIMC$Alarm$getNow(void );
 #line 92
-static void STM16TIMC$Alarm$startAt(STM16TIMC$Alarm$size_type t0, STM16TIMC$Alarm$size_type dt);
+static void STM32Micro16TIMC$Alarm$startAt(STM32Micro16TIMC$Alarm$size_type t0, STM32Micro16TIMC$Alarm$size_type dt);
 #line 62
-static void STM16TIMC$Alarm$stop(void );
+static void STM32Micro16TIMC$Alarm$stop(void );
 # 51 "/home/taoli/workspace/PortingTinyOs/tinyos-2.x/tos/interfaces/Init.nc"
-static error_t STM16TIMC$Init$init(void );
+static error_t STM32Micro16TIMC$Init$init(void );
 # 53 "/home/taoli/workspace/PortingTinyOs/tinyos-2.x/tos/lib/timer/Counter.nc"
-static STM16TIMC$Counter$size_type STM16TIMC$Counter$get(void );
+static STM32Micro16TIMC$Counter$size_type STM32Micro16TIMC$Counter$get(void );
 
 
 
 
 
 
-static bool STM16TIMC$Counter$isOverflowPending(void );
+static bool STM32Micro16TIMC$Counter$isOverflowPending(void );
 
 
 
@@ -3109,6 +3131,42 @@ static void /*HilTimerMicroC.AlarmMicro32.TransformAlarm*/TransformAlarmC$0$Alar
 static void /*HilTimerMicroC.AlarmMicro32.TransformAlarm*/TransformAlarmC$0$Counter$overflow(void );
 #line 71
 static void /*LocalTimeMicroC.CounterToLocalTimeC*/CounterToLocalTimeC$0$Counter$overflow(void );
+# 64 "/home/taoli/workspace/PortingTinyOs/tinyos-2.x/tos/interfaces/TaskBasic.nc"
+static void /*HilTimerMilliC.VirtTimersMilli32*/VirtualizeTimerC$1$updateFromTimer$runTask(void );
+# 72 "/home/taoli/workspace/PortingTinyOs/tinyos-2.x/tos/lib/timer/Timer.nc"
+static void /*HilTimerMilliC.VirtTimersMilli32*/VirtualizeTimerC$1$TimerFrom$fired(void );
+#line 72
+static void /*HilTimerMilliC.VirtTimersMilli32*/VirtualizeTimerC$1$Timer$default$fired(
+# 37 "/home/taoli/workspace/PortingTinyOs/tinyos-2.x/tos/lib/timer/VirtualizeTimerC.nc"
+uint8_t arg_0x2b430d39d020);
+# 53 "/home/taoli/workspace/PortingTinyOs/tinyos-2.x/tos/lib/timer/Timer.nc"
+static void /*HilTimerMilliC.VirtTimersMilli32*/VirtualizeTimerC$1$Timer$startPeriodic(
+# 37 "/home/taoli/workspace/PortingTinyOs/tinyos-2.x/tos/lib/timer/VirtualizeTimerC.nc"
+uint8_t arg_0x2b430d39d020, 
+# 53 "/home/taoli/workspace/PortingTinyOs/tinyos-2.x/tos/lib/timer/Timer.nc"
+uint32_t dt);
+# 64 "/home/taoli/workspace/PortingTinyOs/tinyos-2.x/tos/interfaces/TaskBasic.nc"
+static void /*HilTimerMilliC.AlarmToTimerMilli32*/AlarmToTimerC$1$fired$runTask(void );
+# 67 "/home/taoli/workspace/PortingTinyOs/tinyos-2.x/tos/lib/timer/Alarm.nc"
+static void /*HilTimerMilliC.AlarmToTimerMilli32*/AlarmToTimerC$1$Alarm$fired(void );
+# 125 "/home/taoli/workspace/PortingTinyOs/tinyos-2.x/tos/lib/timer/Timer.nc"
+static uint32_t /*HilTimerMilliC.AlarmToTimerMilli32*/AlarmToTimerC$1$Timer$getNow(void );
+#line 118
+static void /*HilTimerMilliC.AlarmToTimerMilli32*/AlarmToTimerC$1$Timer$startOneShotAt(uint32_t t0, uint32_t dt);
+#line 67
+static void /*HilTimerMilliC.AlarmToTimerMilli32*/AlarmToTimerC$1$Timer$stop(void );
+# 98 "/home/taoli/workspace/PortingTinyOs/tinyos-2.x/tos/lib/timer/Alarm.nc"
+static STM32Milli32TIMC$Alarm$size_type STM32Milli32TIMC$Alarm$getNow(void );
+#line 92
+static void STM32Milli32TIMC$Alarm$startAt(STM32Milli32TIMC$Alarm$size_type t0, STM32Milli32TIMC$Alarm$size_type dt);
+#line 105
+static STM32Milli32TIMC$Alarm$size_type STM32Milli32TIMC$Alarm$getAlarm(void );
+#line 62
+static void STM32Milli32TIMC$Alarm$stop(void );
+# 51 "/home/taoli/workspace/PortingTinyOs/tinyos-2.x/tos/interfaces/Init.nc"
+static error_t STM32Milli32TIMC$Init$init(void );
+# 71 "/home/taoli/workspace/PortingTinyOs/tinyos-2.x/tos/lib/timer/Counter.nc"
+static void STM32Milli32TIMC$Counter$default$overflow(void );
 # 51 "/home/taoli/workspace/PortingTinyOs/tinyos-2.x/tos/interfaces/Init.nc"
 static error_t PlatformP$MoteInit$init(void );
 #line 51
@@ -3121,7 +3179,14 @@ static inline error_t PlatformP$Init$init(void );
 static inline error_t MoteClockP$MoteClockInit$init(void );
 # 43 "/home/taoli/workspace/PortingTinyOs/tinyos-2.x/tos/chips/stm32f4/McuSleepC.nc"
 static inline error_t McuSleepC$McuSleepInit$init(void );
-#line 65
+#line 66
+static inline void McuSleepC$enable_interrupts(void );
+
+
+
+
+
+
 static inline void McuSleepC$McuSleep$sleep(void );
 # 51 "/home/taoli/workspace/PortingTinyOs/tinyos-2.x/tos/interfaces/Init.nc"
 static error_t RealMainP$SoftwareInit$init(void );
@@ -3140,13 +3205,13 @@ int main(void )   ;
 # 64 "/home/taoli/workspace/PortingTinyOs/tinyos-2.x/tos/interfaces/TaskBasic.nc"
 static void SchedulerBasicP$TaskBasic$runTask(
 # 45 "/home/taoli/workspace/PortingTinyOs/tinyos-2.x/tos/system/SchedulerBasicP.nc"
-uint8_t arg_0x2af004aef4c8);
+uint8_t arg_0x2b430d185cb0);
 # 59 "/home/taoli/workspace/PortingTinyOs/tinyos-2.x/tos/interfaces/McuSleep.nc"
 static void SchedulerBasicP$McuSleep$sleep(void );
 # 50 "/home/taoli/workspace/PortingTinyOs/tinyos-2.x/tos/system/SchedulerBasicP.nc"
 enum SchedulerBasicP$__nesc_unnamed4364 {
 
-  SchedulerBasicP$NUM_TASKS = 2U, 
+  SchedulerBasicP$NUM_TASKS = 4U, 
   SchedulerBasicP$NO_TASK = 255
 };
 
@@ -3192,8 +3257,12 @@ static error_t SchedulerBasicP$TaskBasic$postTask(uint8_t id);
 static inline void SchedulerBasicP$TaskBasic$default$runTask(uint8_t id);
 # 53 "/home/taoli/workspace/PortingTinyOs/tinyos-2.x/tos/lib/timer/Timer.nc"
 static void BlinkC$Timer0$startPeriodic(uint32_t dt);
+#line 53
+static void BlinkC$Timer1$startPeriodic(uint32_t dt);
 # 56 "/home/taoli/workspace/PortingTinyOs/tinyos-2.x/tos/interfaces/Leds.nc"
 static void BlinkC$Leds$led0Toggle(void );
+#line 72
+static void BlinkC$Leds$led1Toggle(void );
 # 50 "BlinkC.nc"
 static inline void BlinkC$Boot$booted(void );
 
@@ -3203,6 +3272,14 @@ static inline void BlinkC$Boot$booted(void );
 
 
 static inline void BlinkC$Timer0$fired(void );
+
+
+
+
+
+
+
+static inline void BlinkC$Timer1$fired(void );
 # 31 "/home/taoli/workspace/PortingTinyOs/tinyos-2.x/tos/interfaces/GeneralIO.nc"
 static void LedsP$Led0$toggle(void );
 
@@ -3212,7 +3289,7 @@ static void LedsP$Led0$makeOutput(void );
 #line 29
 static void LedsP$Led0$set(void );
 
-
+static void LedsP$Led1$toggle(void );
 
 
 
@@ -3223,6 +3300,8 @@ static void LedsP$Led1$set(void );
 static inline error_t LedsP$Init$init(void );
 #line 73
 static inline void LedsP$Leds$led0Toggle(void );
+#line 88
+static inline void LedsP$Leds$led1Toggle(void );
 # 49 "/home/taoli/workspace/PortingTinyOs/tinyos-2.x/tos/chips/stm32f4/gpio/HplSTM32GeneralIOPinP.nc"
 static __inline void /*HplSTM32GeneralIOC.PortD.Bit12*/HplSTM32GeneralIOPinP$60$IO$set(void );
 #line 62
@@ -3231,6 +3310,8 @@ static inline void /*HplSTM32GeneralIOC.PortD.Bit12*/HplSTM32GeneralIOPinP$60$IO
 static __inline void /*HplSTM32GeneralIOC.PortD.Bit12*/HplSTM32GeneralIOPinP$60$IO$makeOutput(void );
 #line 49
 static __inline void /*HplSTM32GeneralIOC.PortD.Bit13*/HplSTM32GeneralIOPinP$61$IO$set(void );
+#line 62
+static inline void /*HplSTM32GeneralIOC.PortD.Bit13*/HplSTM32GeneralIOPinP$61$IO$toggle(void );
 #line 90
 static __inline void /*HplSTM32GeneralIOC.PortD.Bit13*/HplSTM32GeneralIOPinP$61$IO$makeOutput(void );
 # 56 "/home/taoli/workspace/PortingTinyOs/tinyos-2.x/tos/interfaces/TaskBasic.nc"
@@ -3247,7 +3328,7 @@ static void /*HilTimerMicroC.VirtTimersMicro32*/VirtualizeTimerC$0$TimerFrom$sto
 
 static void /*HilTimerMicroC.VirtTimersMicro32*/VirtualizeTimerC$0$Timer$fired(
 # 37 "/home/taoli/workspace/PortingTinyOs/tinyos-2.x/tos/lib/timer/VirtualizeTimerC.nc"
-uint8_t arg_0x2af004d3b020);
+uint8_t arg_0x2b430d39d020);
 #line 60
 enum /*HilTimerMicroC.VirtTimersMicro32*/VirtualizeTimerC$0$__nesc_unnamed4365 {
 #line 60
@@ -3348,60 +3429,50 @@ static inline void /*HilTimerMicroC.AlarmToTimerMicro32*/AlarmToTimerC$0$Timer$s
 
 static inline uint32_t /*HilTimerMicroC.AlarmToTimerMicro32*/AlarmToTimerC$0$Timer$getNow(void );
 # 67 "/home/taoli/workspace/PortingTinyOs/tinyos-2.x/tos/lib/timer/Alarm.nc"
-static void STM16TIMC$Alarm$fired(void );
+static void STM32Micro16TIMC$Alarm$fired(void );
 # 71 "/home/taoli/workspace/PortingTinyOs/tinyos-2.x/tos/lib/timer/Counter.nc"
-static void STM16TIMC$Counter$overflow(void );
-# 44 "/home/taoli/workspace/PortingTinyOs/tinyos-2.x/tos/chips/stm32f4/timer/STM16TIMC.nc"
-uint16_t STM16TIMC$alarm;
+static void STM32Micro16TIMC$Counter$overflow(void );
+# 44 "/home/taoli/workspace/PortingTinyOs/tinyos-2.x/tos/chips/stm32f4/timer/STM32Micro16TIMC.nc"
+uint16_t STM32Micro16TIMC$alarm;
 
 
-bool STM16TIMC$running;
+bool STM32Micro16TIMC$running;
 
 
-static TIM_TimeBaseInitTypeDef STM16TIMC$TIM_TimeBaseStructure = { 
+static TIM_TimeBaseInitTypeDef STM32Micro16TIMC$TIM_TimeBaseStructure = { 
 
 .TIM_Period = 1, 
-.TIM_Prescaler = 80 - 1, 
+.TIM_Prescaler = 40 - 1, 
 .TIM_ClockDivision = (uint16_t )0x0000, 
 .TIM_CounterMode = (uint16_t )0x0000 };
 
 
 
-inline static void STM16TIMC$timer_clock_init(void );
+inline static void STM32Micro16TIMC$timer_clock_init(void );
 
 
 
 
 
 
-inline static void STM16TIMC$init_free_timer(void );
+inline static void STM32Micro16TIMC$init_free_timer(void );
 #line 78
-inline static void STM16TIMC$init_alarm_timer(void );
+inline static void STM32Micro16TIMC$init_alarm_timer(void );
 
 
 
 
 
 
-inline static void STM16TIMC$init_timer_irq(void );
+inline static void STM32Micro16TIMC$init_timer_irq(void );
 #line 103
-inline static void STM16TIMC$set_alarm_interval(uint16_t interval);
+inline static void STM32Micro16TIMC$set_alarm_interval(uint16_t interval);
 
 
 
 
 
-static inline void STM16TIMC$enableInterrupt(void );
-
-
-
-
-
-
-
-
-
-static void STM16TIMC$disableInterrupt(void );
+static inline void STM32Micro16TIMC$enableInterrupt(void );
 
 
 
@@ -3411,9 +3482,19 @@ static void STM16TIMC$disableInterrupt(void );
 
 
 
-static inline error_t STM16TIMC$Init$init(void );
+static void STM32Micro16TIMC$disableInterrupt(void );
+
+
+
+
+
+
+
+
+
+static inline error_t STM32Micro16TIMC$Init$init(void );
 #line 150
-static inline void STM16TIMC$Alarm$stop(void );
+static inline void STM32Micro16TIMC$Alarm$stop(void );
 
 
 
@@ -3423,16 +3504,16 @@ static inline void STM16TIMC$Alarm$stop(void );
 
 
 
-static inline void STM16TIMC$Alarm$startAt(uint16_t t0, uint16_t dt);
+static inline void STM32Micro16TIMC$Alarm$startAt(uint16_t t0, uint16_t dt);
 #line 204
-static inline uint16_t STM16TIMC$Alarm$getNow(void );
+static inline uint16_t STM32Micro16TIMC$Alarm$getNow(void );
 #line 216
-static inline uint16_t STM16TIMC$Counter$get(void );
+static inline uint16_t STM32Micro16TIMC$Counter$get(void );
 
 
 
 
-static inline bool STM16TIMC$Counter$isOverflowPending(void );
+static inline bool STM32Micro16TIMC$Counter$isOverflowPending(void );
 #line 241
 void TIM4_IRQHandler(void )   ;
 #line 258
@@ -3522,22 +3603,261 @@ static inline void /*HilTimerMicroC.AlarmMicro32.TransformAlarm*/TransformAlarmC
 static inline void /*HilTimerMicroC.AlarmMicro32.TransformAlarm*/TransformAlarmC$0$Counter$overflow(void );
 # 47 "/home/taoli/workspace/PortingTinyOs/tinyos-2.x/tos/lib/timer/CounterToLocalTimeC.nc"
 static inline void /*LocalTimeMicroC.CounterToLocalTimeC*/CounterToLocalTimeC$0$Counter$overflow(void );
-# 45 "/home/taoli/workspace/PortingTinyOs/tinyos-2.x/tos/chips/stm32f4/stm32f4hardware.h"
-__inline  __nesc_atomic_t __nesc_atomic_start(void )
+# 56 "/home/taoli/workspace/PortingTinyOs/tinyos-2.x/tos/interfaces/TaskBasic.nc"
+static error_t /*HilTimerMilliC.VirtTimersMilli32*/VirtualizeTimerC$1$updateFromTimer$postTask(void );
+# 125 "/home/taoli/workspace/PortingTinyOs/tinyos-2.x/tos/lib/timer/Timer.nc"
+static uint32_t /*HilTimerMilliC.VirtTimersMilli32*/VirtualizeTimerC$1$TimerFrom$getNow(void );
+#line 118
+static void /*HilTimerMilliC.VirtTimersMilli32*/VirtualizeTimerC$1$TimerFrom$startOneShotAt(uint32_t t0, uint32_t dt);
+#line 67
+static void /*HilTimerMilliC.VirtTimersMilli32*/VirtualizeTimerC$1$TimerFrom$stop(void );
+
+
+
+
+static void /*HilTimerMilliC.VirtTimersMilli32*/VirtualizeTimerC$1$Timer$fired(
+# 37 "/home/taoli/workspace/PortingTinyOs/tinyos-2.x/tos/lib/timer/VirtualizeTimerC.nc"
+uint8_t arg_0x2b430d39d020);
+#line 60
+enum /*HilTimerMilliC.VirtTimersMilli32*/VirtualizeTimerC$1$__nesc_unnamed4371 {
+#line 60
+  VirtualizeTimerC$1$updateFromTimer = 2U
+};
+#line 60
+typedef int /*HilTimerMilliC.VirtTimersMilli32*/VirtualizeTimerC$1$__nesc_sillytask_updateFromTimer[/*HilTimerMilliC.VirtTimersMilli32*/VirtualizeTimerC$1$updateFromTimer];
+#line 42
+enum /*HilTimerMilliC.VirtTimersMilli32*/VirtualizeTimerC$1$__nesc_unnamed4372 {
+
+  VirtualizeTimerC$1$NUM_TIMERS = 1U, 
+  VirtualizeTimerC$1$END_OF_LIST = 255
+};
+
+
+
+
+
+
+
+
+#line 48
+typedef struct /*HilTimerMilliC.VirtTimersMilli32*/VirtualizeTimerC$1$__nesc_unnamed4373 {
+
+  uint32_t t0;
+  uint32_t dt;
+  bool isoneshot : 1;
+  bool isrunning : 1;
+  bool _reserved : 6;
+} /*HilTimerMilliC.VirtTimersMilli32*/VirtualizeTimerC$1$Timer_t;
+
+/*HilTimerMilliC.VirtTimersMilli32*/VirtualizeTimerC$1$Timer_t /*HilTimerMilliC.VirtTimersMilli32*/VirtualizeTimerC$1$m_timers[/*HilTimerMilliC.VirtTimersMilli32*/VirtualizeTimerC$1$NUM_TIMERS];
+
+
+
+
+static void /*HilTimerMilliC.VirtTimersMilli32*/VirtualizeTimerC$1$fireTimers(uint32_t now);
+#line 89
+static void /*HilTimerMilliC.VirtTimersMilli32*/VirtualizeTimerC$1$updateFromTimer$runTask(void );
+#line 128
+static inline void /*HilTimerMilliC.VirtTimersMilli32*/VirtualizeTimerC$1$TimerFrom$fired(void );
+
+
+
+
+static inline void /*HilTimerMilliC.VirtTimersMilli32*/VirtualizeTimerC$1$startTimer(uint8_t num, uint32_t t0, uint32_t dt, bool isoneshot);
+
+
+
+
+
+
+
+
+
+static inline void /*HilTimerMilliC.VirtTimersMilli32*/VirtualizeTimerC$1$Timer$startPeriodic(uint8_t num, uint32_t dt);
+#line 193
+static inline void /*HilTimerMilliC.VirtTimersMilli32*/VirtualizeTimerC$1$Timer$default$fired(uint8_t num);
+# 56 "/home/taoli/workspace/PortingTinyOs/tinyos-2.x/tos/interfaces/TaskBasic.nc"
+static error_t /*HilTimerMilliC.AlarmToTimerMilli32*/AlarmToTimerC$1$fired$postTask(void );
+# 98 "/home/taoli/workspace/PortingTinyOs/tinyos-2.x/tos/lib/timer/Alarm.nc"
+static /*HilTimerMilliC.AlarmToTimerMilli32*/AlarmToTimerC$1$Alarm$size_type /*HilTimerMilliC.AlarmToTimerMilli32*/AlarmToTimerC$1$Alarm$getNow(void );
+#line 92
+static void /*HilTimerMilliC.AlarmToTimerMilli32*/AlarmToTimerC$1$Alarm$startAt(/*HilTimerMilliC.AlarmToTimerMilli32*/AlarmToTimerC$1$Alarm$size_type t0, /*HilTimerMilliC.AlarmToTimerMilli32*/AlarmToTimerC$1$Alarm$size_type dt);
+#line 105
+static /*HilTimerMilliC.AlarmToTimerMilli32*/AlarmToTimerC$1$Alarm$size_type /*HilTimerMilliC.AlarmToTimerMilli32*/AlarmToTimerC$1$Alarm$getAlarm(void );
+#line 62
+static void /*HilTimerMilliC.AlarmToTimerMilli32*/AlarmToTimerC$1$Alarm$stop(void );
+# 72 "/home/taoli/workspace/PortingTinyOs/tinyos-2.x/tos/lib/timer/Timer.nc"
+static void /*HilTimerMilliC.AlarmToTimerMilli32*/AlarmToTimerC$1$Timer$fired(void );
+# 63 "/home/taoli/workspace/PortingTinyOs/tinyos-2.x/tos/lib/timer/AlarmToTimerC.nc"
+enum /*HilTimerMilliC.AlarmToTimerMilli32*/AlarmToTimerC$1$__nesc_unnamed4374 {
+#line 63
+  AlarmToTimerC$1$fired = 3U
+};
+#line 63
+typedef int /*HilTimerMilliC.AlarmToTimerMilli32*/AlarmToTimerC$1$__nesc_sillytask_fired[/*HilTimerMilliC.AlarmToTimerMilli32*/AlarmToTimerC$1$fired];
+#line 44
+uint32_t /*HilTimerMilliC.AlarmToTimerMilli32*/AlarmToTimerC$1$m_dt;
+bool /*HilTimerMilliC.AlarmToTimerMilli32*/AlarmToTimerC$1$m_oneshot;
+
+static inline void /*HilTimerMilliC.AlarmToTimerMilli32*/AlarmToTimerC$1$start(uint32_t t0, uint32_t dt, bool oneshot);
+#line 60
+static inline void /*HilTimerMilliC.AlarmToTimerMilli32*/AlarmToTimerC$1$Timer$stop(void );
+
+
+static void /*HilTimerMilliC.AlarmToTimerMilli32*/AlarmToTimerC$1$fired$runTask(void );
+
+
+
+
+
+
+static inline void /*HilTimerMilliC.AlarmToTimerMilli32*/AlarmToTimerC$1$Alarm$fired(void );
+#line 82
+static inline void /*HilTimerMilliC.AlarmToTimerMilli32*/AlarmToTimerC$1$Timer$startOneShotAt(uint32_t t0, uint32_t dt);
+
+
+static inline uint32_t /*HilTimerMilliC.AlarmToTimerMilli32*/AlarmToTimerC$1$Timer$getNow(void );
+# 67 "/home/taoli/workspace/PortingTinyOs/tinyos-2.x/tos/lib/timer/Alarm.nc"
+static void STM32Milli32TIMC$Alarm$fired(void );
+# 71 "/home/taoli/workspace/PortingTinyOs/tinyos-2.x/tos/lib/timer/Counter.nc"
+static void STM32Milli32TIMC$Counter$overflow(void );
+# 43 "/home/taoli/workspace/PortingTinyOs/tinyos-2.x/tos/chips/stm32f4/timer/STM32Milli32TIMC.nc"
+uint32_t STM32Milli32TIMC$alarm;
+bool STM32Milli32TIMC$running;
+
+static TIM_TimeBaseInitTypeDef STM32Milli32TIMC$TIM_TimeBaseStructure = 
+{ 
+.TIM_Period = 1, 
+.TIM_Prescaler = 41016 - 1, 
+.TIM_ClockDivision = (uint16_t )0x0000, 
+.TIM_CounterMode = (uint16_t )0x0000 };
+
+
+inline static void STM32Milli32TIMC$timer_clock_init(void );
+
+
+
+
+
+
+inline static void STM32Milli32TIMC$init_free_timer(void );
+#line 74
+inline static void STM32Milli32TIMC$init_alarm_timer(void );
+
+
+
+
+
+
+inline static void STM32Milli32TIMC$init_timer_irq(void );
+#line 99
+inline static void STM32Milli32TIMC$set_alarm_interval(uint32_t interval);
+
+
+
+
+
+
+static inline void STM32Milli32TIMC$enableInterrupt(void );
+
+
+
+
+
+
+
+
+
+static void STM32Milli32TIMC$disableInterrupt(void );
+
+
+
+
+
+
+
+
+
+static inline error_t STM32Milli32TIMC$Init$init(void );
+#line 147
+static inline void STM32Milli32TIMC$Alarm$stop(void );
+
+
+
+
+
+
+
+
+
+static void STM32Milli32TIMC$Alarm$startAt(uint32_t t0, uint32_t dt);
+#line 201
+static inline uint32_t STM32Milli32TIMC$Alarm$getNow(void );
+
+
+
+
+
+
+static inline uint32_t STM32Milli32TIMC$Alarm$getAlarm(void );
+#line 233
+static inline void STM32Milli32TIMC$Counter$default$overflow(void );
+
+
+
+
+void TIM5_IRQHandler(void )   ;
+#line 255
+void TIM2_IRQHandler(void )   ;
+# 72 "/home/taoli/workspace/PortingTinyOs/tinyos-2.x/tos/chips/stm32f4/stm32f4hardware.h"
+static __inline void __nesc_disable_interrupt()
+#line 72
 {
-  uint32_t result = 0;
-  uint32_t temp = 0;
-
-
-
-
+  uint32_t statusReg = 0;
 
 
   TIM_ITConfig((TIM_TypeDef *)((uint32_t )0x40000000 + 0x0400), (uint16_t )0x0001, DISABLE);
-#line 69
+  TIM_ITConfig((TIM_TypeDef *)((uint32_t )0x40000000 + 0x0000), (uint16_t )0x0001, DISABLE);
+
+
+
+
+
+
+
+
+
+  return;
+}
+
+
+__inline  __nesc_atomic_t __nesc_atomic_start(void )
+{
+  uint32_t result = 0;
+
+
+
+
+
+  __nesc_disable_interrupt();
+#line 115
   return result;
 }
 
+#line 46
+static __inline void __nesc_enable_interrupt()
+#line 46
+{
+  uint32_t statusReg = 0;
+
+
+  TIM_ITConfig((TIM_TypeDef *)((uint32_t )0x40000000 + 0x0400), (uint16_t )0x0001, ENABLE);
+  TIM_ITConfig((TIM_TypeDef *)((uint32_t )0x40000000 + 0x0000), (uint16_t )0x0001, ENABLE);
+#line 68
+  return;
+}
+
+#line 118
 __inline  void __nesc_atomic_end(__nesc_atomic_t oldState)
 {
   uint32_t statusReg = 0;
@@ -3550,8 +3870,8 @@ __inline  void __nesc_atomic_end(__nesc_atomic_t oldState)
 
 
 
-  TIM_ITConfig((TIM_TypeDef *)((uint32_t )0x40000000 + 0x0400), (uint16_t )0x0001, ENABLE);
-#line 98
+  __nesc_enable_interrupt();
+#line 144
   return;
 }
 
@@ -3815,8 +4135,266 @@ inline static bool RealMainP$Scheduler$runNextTask(void ){
 #line 54
 }
 #line 54
-# 204 "/home/taoli/workspace/PortingTinyOs/tinyos-2.x/tos/chips/stm32f4/timer/STM16TIMC.nc"
-static inline uint16_t STM16TIMC$Alarm$getNow(void )
+# 99 "/home/taoli/workspace/PortingTinyOs/tinyos-2.x/tos/chips/stm32f4/timer/STM32Milli32TIMC.nc"
+inline static void STM32Milli32TIMC$set_alarm_interval(uint32_t interval)
+{
+  (
+  (TIM_TypeDef *)((uint32_t )0x40000000 + 0x0000))->CNT = 0;
+  ((TIM_TypeDef *)((uint32_t )0x40000000 + 0x0000))->ARR = (uint16_t )interval - 1;
+}
+
+static inline void STM32Milli32TIMC$enableInterrupt(void )
+{
+
+  { __nesc_atomic_t __nesc_atomic = __nesc_atomic_start();
+#line 109
+    {
+      TIM_ITConfig((TIM_TypeDef *)((uint32_t )0x40000000 + 0x0000), (uint16_t )0x0001, ENABLE);
+      TIM_Cmd((TIM_TypeDef *)((uint32_t )0x40000000 + 0x0000), ENABLE);
+    }
+#line 112
+    __nesc_atomic_end(__nesc_atomic); }
+  STM32Milli32TIMC$running = TRUE;
+}
+
+#line 208
+static inline uint32_t STM32Milli32TIMC$Alarm$getAlarm(void )
+{
+  return STM32Milli32TIMC$alarm;
+}
+
+# 105 "/home/taoli/workspace/PortingTinyOs/tinyos-2.x/tos/lib/timer/Alarm.nc"
+inline static /*HilTimerMilliC.AlarmToTimerMilli32*/AlarmToTimerC$1$Alarm$size_type /*HilTimerMilliC.AlarmToTimerMilli32*/AlarmToTimerC$1$Alarm$getAlarm(void ){
+#line 105
+  unsigned long __nesc_result;
+#line 105
+
+#line 105
+  __nesc_result = STM32Milli32TIMC$Alarm$getAlarm();
+#line 105
+
+#line 105
+  return __nesc_result;
+#line 105
+}
+#line 105
+# 201 "/home/taoli/workspace/PortingTinyOs/tinyos-2.x/tos/chips/stm32f4/timer/STM32Milli32TIMC.nc"
+static inline uint32_t STM32Milli32TIMC$Alarm$getNow(void )
+{
+  uint32_t c;
+
+#line 204
+  c = ((TIM_TypeDef *)((uint32_t )0x40000000 + 0x0C00))->CNT;
+  return c;
+}
+
+# 98 "/home/taoli/workspace/PortingTinyOs/tinyos-2.x/tos/lib/timer/Alarm.nc"
+inline static /*HilTimerMilliC.AlarmToTimerMilli32*/AlarmToTimerC$1$Alarm$size_type /*HilTimerMilliC.AlarmToTimerMilli32*/AlarmToTimerC$1$Alarm$getNow(void ){
+#line 98
+  unsigned long __nesc_result;
+#line 98
+
+#line 98
+  __nesc_result = STM32Milli32TIMC$Alarm$getNow();
+#line 98
+
+#line 98
+  return __nesc_result;
+#line 98
+}
+#line 98
+# 85 "/home/taoli/workspace/PortingTinyOs/tinyos-2.x/tos/lib/timer/AlarmToTimerC.nc"
+static inline uint32_t /*HilTimerMilliC.AlarmToTimerMilli32*/AlarmToTimerC$1$Timer$getNow(void )
+{
+#line 86
+  return /*HilTimerMilliC.AlarmToTimerMilli32*/AlarmToTimerC$1$Alarm$getNow();
+}
+
+# 125 "/home/taoli/workspace/PortingTinyOs/tinyos-2.x/tos/lib/timer/Timer.nc"
+inline static uint32_t /*HilTimerMilliC.VirtTimersMilli32*/VirtualizeTimerC$1$TimerFrom$getNow(void ){
+#line 125
+  unsigned long __nesc_result;
+#line 125
+
+#line 125
+  __nesc_result = /*HilTimerMilliC.AlarmToTimerMilli32*/AlarmToTimerC$1$Timer$getNow();
+#line 125
+
+#line 125
+  return __nesc_result;
+#line 125
+}
+#line 125
+# 128 "/home/taoli/workspace/PortingTinyOs/tinyos-2.x/tos/lib/timer/VirtualizeTimerC.nc"
+static inline void /*HilTimerMilliC.VirtTimersMilli32*/VirtualizeTimerC$1$TimerFrom$fired(void )
+{
+  /*HilTimerMilliC.VirtTimersMilli32*/VirtualizeTimerC$1$fireTimers(/*HilTimerMilliC.VirtTimersMilli32*/VirtualizeTimerC$1$TimerFrom$getNow());
+}
+
+# 72 "/home/taoli/workspace/PortingTinyOs/tinyos-2.x/tos/lib/timer/Timer.nc"
+inline static void /*HilTimerMilliC.AlarmToTimerMilli32*/AlarmToTimerC$1$Timer$fired(void ){
+#line 72
+  /*HilTimerMilliC.VirtTimersMilli32*/VirtualizeTimerC$1$TimerFrom$fired();
+#line 72
+}
+#line 72
+# 62 "/home/taoli/workspace/PortingTinyOs/tinyos-2.x/tos/chips/stm32f4/gpio/HplSTM32GeneralIOPinP.nc"
+static inline void /*HplSTM32GeneralIOC.PortD.Bit13*/HplSTM32GeneralIOPinP$61$IO$toggle(void )
+#line 62
+{
+  GPIO_TypeDef *port = (GPIO_TypeDef *)1073875968U;
+
+
+
+
+
+  GPIO_ToggleBits(port, 8192U);
+}
+
+# 31 "/home/taoli/workspace/PortingTinyOs/tinyos-2.x/tos/interfaces/GeneralIO.nc"
+inline static void LedsP$Led1$toggle(void ){
+#line 31
+  /*HplSTM32GeneralIOC.PortD.Bit13*/HplSTM32GeneralIOPinP$61$IO$toggle();
+#line 31
+}
+#line 31
+# 88 "/home/taoli/workspace/PortingTinyOs/tinyos-2.x/tos/system/LedsP.nc"
+static inline void LedsP$Leds$led1Toggle(void )
+#line 88
+{
+  LedsP$Led1$toggle();
+  ;
+#line 90
+  ;
+}
+
+# 72 "/home/taoli/workspace/PortingTinyOs/tinyos-2.x/tos/interfaces/Leds.nc"
+inline static void BlinkC$Leds$led1Toggle(void ){
+#line 72
+  LedsP$Leds$led1Toggle();
+#line 72
+}
+#line 72
+# 65 "BlinkC.nc"
+static inline void BlinkC$Timer1$fired(void )
+{
+  ;
+
+  BlinkC$Leds$led1Toggle();
+}
+
+# 193 "/home/taoli/workspace/PortingTinyOs/tinyos-2.x/tos/lib/timer/VirtualizeTimerC.nc"
+static inline void /*HilTimerMilliC.VirtTimersMilli32*/VirtualizeTimerC$1$Timer$default$fired(uint8_t num)
+{
+}
+
+# 72 "/home/taoli/workspace/PortingTinyOs/tinyos-2.x/tos/lib/timer/Timer.nc"
+inline static void /*HilTimerMilliC.VirtTimersMilli32*/VirtualizeTimerC$1$Timer$fired(uint8_t arg_0x2b430d39d020){
+#line 72
+  switch (arg_0x2b430d39d020) {
+#line 72
+    case 0U:
+#line 72
+      BlinkC$Timer1$fired();
+#line 72
+      break;
+#line 72
+    default:
+#line 72
+      /*HilTimerMilliC.VirtTimersMilli32*/VirtualizeTimerC$1$Timer$default$fired(arg_0x2b430d39d020);
+#line 72
+      break;
+#line 72
+    }
+#line 72
+}
+#line 72
+# 86 "/home/taoli/workspace/PortingTinyOs/tinyos-2.x/tos/system/SchedulerBasicP.nc"
+static inline bool SchedulerBasicP$isWaiting(uint8_t id)
+{
+  return SchedulerBasicP$m_next[id] != SchedulerBasicP$NO_TASK || SchedulerBasicP$m_tail == id;
+}
+
+static inline bool SchedulerBasicP$pushTask(uint8_t id)
+{
+  if (!SchedulerBasicP$isWaiting(id)) 
+    {
+      if (SchedulerBasicP$m_head == SchedulerBasicP$NO_TASK) 
+        {
+          SchedulerBasicP$m_head = id;
+          SchedulerBasicP$m_tail = id;
+        }
+      else 
+        {
+          SchedulerBasicP$m_next[SchedulerBasicP$m_tail] = id;
+          SchedulerBasicP$m_tail = id;
+        }
+      return TRUE;
+    }
+  else 
+    {
+      return FALSE;
+    }
+}
+
+# 147 "/home/taoli/workspace/PortingTinyOs/tinyos-2.x/tos/chips/stm32f4/timer/STM32Milli32TIMC.nc"
+static inline void STM32Milli32TIMC$Alarm$stop(void )
+{
+  STM32Milli32TIMC$disableInterrupt();
+}
+
+# 62 "/home/taoli/workspace/PortingTinyOs/tinyos-2.x/tos/lib/timer/Alarm.nc"
+inline static void /*HilTimerMilliC.AlarmToTimerMilli32*/AlarmToTimerC$1$Alarm$stop(void ){
+#line 62
+  STM32Milli32TIMC$Alarm$stop();
+#line 62
+}
+#line 62
+# 60 "/home/taoli/workspace/PortingTinyOs/tinyos-2.x/tos/lib/timer/AlarmToTimerC.nc"
+static inline void /*HilTimerMilliC.AlarmToTimerMilli32*/AlarmToTimerC$1$Timer$stop(void )
+{
+#line 61
+  /*HilTimerMilliC.AlarmToTimerMilli32*/AlarmToTimerC$1$Alarm$stop();
+}
+
+# 67 "/home/taoli/workspace/PortingTinyOs/tinyos-2.x/tos/lib/timer/Timer.nc"
+inline static void /*HilTimerMilliC.VirtTimersMilli32*/VirtualizeTimerC$1$TimerFrom$stop(void ){
+#line 67
+  /*HilTimerMilliC.AlarmToTimerMilli32*/AlarmToTimerC$1$Timer$stop();
+#line 67
+}
+#line 67
+# 92 "/home/taoli/workspace/PortingTinyOs/tinyos-2.x/tos/lib/timer/Alarm.nc"
+inline static void /*HilTimerMilliC.AlarmToTimerMilli32*/AlarmToTimerC$1$Alarm$startAt(/*HilTimerMilliC.AlarmToTimerMilli32*/AlarmToTimerC$1$Alarm$size_type t0, /*HilTimerMilliC.AlarmToTimerMilli32*/AlarmToTimerC$1$Alarm$size_type dt){
+#line 92
+  STM32Milli32TIMC$Alarm$startAt(t0, dt);
+#line 92
+}
+#line 92
+# 47 "/home/taoli/workspace/PortingTinyOs/tinyos-2.x/tos/lib/timer/AlarmToTimerC.nc"
+static inline void /*HilTimerMilliC.AlarmToTimerMilli32*/AlarmToTimerC$1$start(uint32_t t0, uint32_t dt, bool oneshot)
+{
+  /*HilTimerMilliC.AlarmToTimerMilli32*/AlarmToTimerC$1$m_dt = dt;
+  /*HilTimerMilliC.AlarmToTimerMilli32*/AlarmToTimerC$1$m_oneshot = oneshot;
+  /*HilTimerMilliC.AlarmToTimerMilli32*/AlarmToTimerC$1$Alarm$startAt(t0, dt);
+}
+
+#line 82
+static inline void /*HilTimerMilliC.AlarmToTimerMilli32*/AlarmToTimerC$1$Timer$startOneShotAt(uint32_t t0, uint32_t dt)
+{
+#line 83
+  /*HilTimerMilliC.AlarmToTimerMilli32*/AlarmToTimerC$1$start(t0, dt, TRUE);
+}
+
+# 118 "/home/taoli/workspace/PortingTinyOs/tinyos-2.x/tos/lib/timer/Timer.nc"
+inline static void /*HilTimerMilliC.VirtTimersMilli32*/VirtualizeTimerC$1$TimerFrom$startOneShotAt(uint32_t t0, uint32_t dt){
+#line 118
+  /*HilTimerMilliC.AlarmToTimerMilli32*/AlarmToTimerC$1$Timer$startOneShotAt(t0, dt);
+#line 118
+}
+#line 118
+# 204 "/home/taoli/workspace/PortingTinyOs/tinyos-2.x/tos/chips/stm32f4/timer/STM32Micro16TIMC.nc"
+static inline uint16_t STM32Micro16TIMC$Alarm$getNow(void )
 {
   uint16_t c;
 
@@ -3830,9 +4408,9 @@ static inline uint16_t STM16TIMC$Alarm$getNow(void )
 
 
 
-static inline uint16_t STM16TIMC$Counter$get(void )
+static inline uint16_t STM32Micro16TIMC$Counter$get(void )
 {
-  return STM16TIMC$Alarm$getNow();
+  return STM32Micro16TIMC$Alarm$getNow();
 }
 
 # 53 "/home/taoli/workspace/PortingTinyOs/tinyos-2.x/tos/lib/timer/Counter.nc"
@@ -3842,7 +4420,7 @@ inline static /*CounterTMicro32C.TransformCounter*/TransformCounterC$0$CounterFr
 #line 53
 
 #line 53
-  __nesc_result = STM16TIMC$Counter$get();
+  __nesc_result = STM32Micro16TIMC$Counter$get();
 #line 53
 
 #line 53
@@ -3850,8 +4428,8 @@ inline static /*CounterTMicro32C.TransformCounter*/TransformCounterC$0$CounterFr
 #line 53
 }
 #line 53
-# 221 "/home/taoli/workspace/PortingTinyOs/tinyos-2.x/tos/chips/stm32f4/timer/STM16TIMC.nc"
-static inline bool STM16TIMC$Counter$isOverflowPending(void )
+# 221 "/home/taoli/workspace/PortingTinyOs/tinyos-2.x/tos/chips/stm32f4/timer/STM32Micro16TIMC.nc"
+static inline bool STM32Micro16TIMC$Counter$isOverflowPending(void )
 {
   return TIM_GetITStatus((TIM_TypeDef *)((uint32_t )0x40000000 + 0x0800), (uint16_t )0x0001);
 }
@@ -3863,7 +4441,7 @@ inline static bool /*CounterTMicro32C.TransformCounter*/TransformCounterC$0$Coun
 #line 60
 
 #line 60
-  __nesc_result = STM16TIMC$Counter$isOverflowPending();
+  __nesc_result = STM32Micro16TIMC$Counter$isOverflowPending();
 #line 60
 
 #line 60
@@ -3871,19 +4449,19 @@ inline static bool /*CounterTMicro32C.TransformCounter*/TransformCounterC$0$Coun
 #line 60
 }
 #line 60
-# 109 "/home/taoli/workspace/PortingTinyOs/tinyos-2.x/tos/chips/stm32f4/timer/STM16TIMC.nc"
-static inline void STM16TIMC$enableInterrupt(void )
+# 109 "/home/taoli/workspace/PortingTinyOs/tinyos-2.x/tos/chips/stm32f4/timer/STM32Micro16TIMC.nc"
+static inline void STM32Micro16TIMC$enableInterrupt(void )
 {
   /* atomic removed: atomic calls only */
   {
     TIM_ITConfig((TIM_TypeDef *)((uint32_t )0x40000000 + 0x0400), (uint16_t )0x0001, ENABLE);
     TIM_Cmd((TIM_TypeDef *)((uint32_t )0x40000000 + 0x0400), ENABLE);
   }
-  STM16TIMC$running = TRUE;
+  STM32Micro16TIMC$running = TRUE;
 }
 
 #line 103
-inline static void STM16TIMC$set_alarm_interval(uint16_t interval)
+inline static void STM32Micro16TIMC$set_alarm_interval(uint16_t interval)
 #line 103
 {
   (
@@ -3892,16 +4470,16 @@ inline static void STM16TIMC$set_alarm_interval(uint16_t interval)
 }
 
 #line 160
-static inline void STM16TIMC$Alarm$startAt(uint16_t t0, uint16_t dt)
+static inline void STM32Micro16TIMC$Alarm$startAt(uint16_t t0, uint16_t dt)
 {
 
   uint16_t interval;
 
 #line 164
-  STM16TIMC$disableInterrupt();
+  STM32Micro16TIMC$disableInterrupt();
   {
 
-    uint16_t now = STM16TIMC$Alarm$getNow();
+    uint16_t now = STM32Micro16TIMC$Alarm$getNow();
     uint16_t elapsed = now - t0;
 
 #line 169
@@ -3912,7 +4490,7 @@ static inline void STM16TIMC$Alarm$startAt(uint16_t t0, uint16_t dt)
 
         interval = 5;
 
-        STM16TIMC$alarm = now + 5;
+        STM32Micro16TIMC$alarm = now + 5;
       }
     else 
 
@@ -3925,27 +4503,27 @@ static inline void STM16TIMC$Alarm$startAt(uint16_t t0, uint16_t dt)
           {
             interval = 5;
 
-            STM16TIMC$alarm = now + 5;
+            STM32Micro16TIMC$alarm = now + 5;
           }
         else 
 
           {
             interval = remaining;
 
-            STM16TIMC$alarm = now + remaining;
+            STM32Micro16TIMC$alarm = now + remaining;
           }
       }
 
 
-    STM16TIMC$set_alarm_interval(interval);
-    STM16TIMC$enableInterrupt();
+    STM32Micro16TIMC$set_alarm_interval(interval);
+    STM32Micro16TIMC$enableInterrupt();
   }
 }
 
 # 92 "/home/taoli/workspace/PortingTinyOs/tinyos-2.x/tos/lib/timer/Alarm.nc"
 inline static void /*HilTimerMicroC.AlarmMicro32.TransformAlarm*/TransformAlarmC$0$AlarmFrom$startAt(/*HilTimerMicroC.AlarmMicro32.TransformAlarm*/TransformAlarmC$0$AlarmFrom$size_type t0, /*HilTimerMicroC.AlarmMicro32.TransformAlarm*/TransformAlarmC$0$AlarmFrom$size_type dt){
 #line 92
-  STM16TIMC$Alarm$startAt(t0, dt);
+  STM32Micro16TIMC$Alarm$startAt(t0, dt);
 #line 92
 }
 #line 92
@@ -4093,9 +4671,9 @@ static inline void /*HilTimerMicroC.VirtTimersMicro32*/VirtualizeTimerC$0$Timer$
 }
 
 # 72 "/home/taoli/workspace/PortingTinyOs/tinyos-2.x/tos/lib/timer/Timer.nc"
-inline static void /*HilTimerMicroC.VirtTimersMicro32*/VirtualizeTimerC$0$Timer$fired(uint8_t arg_0x2af004d3b020){
+inline static void /*HilTimerMicroC.VirtTimersMicro32*/VirtualizeTimerC$0$Timer$fired(uint8_t arg_0x2b430d39d020){
 #line 72
-  switch (arg_0x2af004d3b020) {
+  switch (arg_0x2b430d39d020) {
 #line 72
     case 0U:
 #line 72
@@ -4105,7 +4683,7 @@ inline static void /*HilTimerMicroC.VirtTimersMicro32*/VirtualizeTimerC$0$Timer$
 #line 72
     default:
 #line 72
-      /*HilTimerMicroC.VirtTimersMicro32*/VirtualizeTimerC$0$Timer$default$fired(arg_0x2af004d3b020);
+      /*HilTimerMicroC.VirtTimersMicro32*/VirtualizeTimerC$0$Timer$default$fired(arg_0x2b430d39d020);
 #line 72
       break;
 #line 72
@@ -4113,44 +4691,16 @@ inline static void /*HilTimerMicroC.VirtTimersMicro32*/VirtualizeTimerC$0$Timer$
 #line 72
 }
 #line 72
-# 86 "/home/taoli/workspace/PortingTinyOs/tinyos-2.x/tos/system/SchedulerBasicP.nc"
-static inline bool SchedulerBasicP$isWaiting(uint8_t id)
+# 150 "/home/taoli/workspace/PortingTinyOs/tinyos-2.x/tos/chips/stm32f4/timer/STM32Micro16TIMC.nc"
+static inline void STM32Micro16TIMC$Alarm$stop(void )
 {
-  return SchedulerBasicP$m_next[id] != SchedulerBasicP$NO_TASK || SchedulerBasicP$m_tail == id;
-}
-
-static inline bool SchedulerBasicP$pushTask(uint8_t id)
-{
-  if (!SchedulerBasicP$isWaiting(id)) 
-    {
-      if (SchedulerBasicP$m_head == SchedulerBasicP$NO_TASK) 
-        {
-          SchedulerBasicP$m_head = id;
-          SchedulerBasicP$m_tail = id;
-        }
-      else 
-        {
-          SchedulerBasicP$m_next[SchedulerBasicP$m_tail] = id;
-          SchedulerBasicP$m_tail = id;
-        }
-      return TRUE;
-    }
-  else 
-    {
-      return FALSE;
-    }
-}
-
-# 150 "/home/taoli/workspace/PortingTinyOs/tinyos-2.x/tos/chips/stm32f4/timer/STM16TIMC.nc"
-static inline void STM16TIMC$Alarm$stop(void )
-{
-  STM16TIMC$disableInterrupt();
+  STM32Micro16TIMC$disableInterrupt();
 }
 
 # 62 "/home/taoli/workspace/PortingTinyOs/tinyos-2.x/tos/lib/timer/Alarm.nc"
 inline static void /*HilTimerMicroC.AlarmMicro32.TransformAlarm*/TransformAlarmC$0$AlarmFrom$stop(void ){
 #line 62
-  STM16TIMC$Alarm$stop();
+  STM32Micro16TIMC$Alarm$stop();
 #line 62
 }
 #line 62
@@ -4210,26 +4760,36 @@ inline static void /*HilTimerMicroC.VirtTimersMicro32*/VirtualizeTimerC$0$TimerF
 #line 118
 }
 #line 118
-# 78 "/home/taoli/workspace/PortingTinyOs/tinyos-2.x/tos/chips/stm32f4/timer/STM16TIMC.nc"
-inline static void STM16TIMC$init_alarm_timer(void )
+# 58 "/home/taoli/workspace/PortingTinyOs/tinyos-2.x/tos/types/TinyError.h"
+static inline  error_t ecombine(error_t r1, error_t r2)
+
+
+
+
+{
+  return r1 == r2 ? r1 : FAIL;
+}
+
+# 78 "/home/taoli/workspace/PortingTinyOs/tinyos-2.x/tos/chips/stm32f4/timer/STM32Micro16TIMC.nc"
+inline static void STM32Micro16TIMC$init_alarm_timer(void )
 #line 78
 {
 
   TIM_DeInit((TIM_TypeDef *)((uint32_t )0x40000000 + 0x0400));
-  TIM_TimeBaseInit((TIM_TypeDef *)((uint32_t )0x40000000 + 0x0400), &STM16TIMC$TIM_TimeBaseStructure);
+  TIM_TimeBaseInit((TIM_TypeDef *)((uint32_t )0x40000000 + 0x0400), &STM32Micro16TIMC$TIM_TimeBaseStructure);
 }
 
 #line 66
-inline static void STM16TIMC$init_free_timer(void )
+inline static void STM32Micro16TIMC$init_free_timer(void )
 #line 66
 {
 
 
   TIM_DeInit((TIM_TypeDef *)((uint32_t )0x40000000 + 0x0800));
 
-  STM16TIMC$TIM_TimeBaseStructure.TIM_Period = (uint16_t )0xFFFF;
+  STM32Micro16TIMC$TIM_TimeBaseStructure.TIM_Period = (uint16_t )0xFFFF;
 
-  TIM_TimeBaseInit((TIM_TypeDef *)((uint32_t )0x40000000 + 0x0800), &STM16TIMC$TIM_TimeBaseStructure);
+  TIM_TimeBaseInit((TIM_TypeDef *)((uint32_t )0x40000000 + 0x0800), &STM32Micro16TIMC$TIM_TimeBaseStructure);
   TIM_ITConfig((TIM_TypeDef *)((uint32_t )0x40000000 + 0x0800), (uint16_t )0x0001, ENABLE);
 }
 
@@ -4241,7 +4801,7 @@ inline static void STM16TIMC$init_free_timer(void )
 
 
 
-inline static void STM16TIMC$init_timer_irq(void )
+inline static void STM32Micro16TIMC$init_timer_irq(void )
 #line 85
 {
 
@@ -4261,26 +4821,99 @@ inline static void STM16TIMC$init_timer_irq(void )
 }
 
 #line 59
-inline static void STM16TIMC$timer_clock_init(void )
+inline static void STM32Micro16TIMC$timer_clock_init(void )
 {
   RCC_APB1PeriphClockCmd((uint32_t )0x00000004, ENABLE);
   RCC_APB1PeriphClockCmd((uint32_t )0x00000002, ENABLE);
 }
 
 #line 129
-static inline error_t STM16TIMC$Init$init(void )
+static inline error_t STM32Micro16TIMC$Init$init(void )
 {
   GPIO_ResetBits((GPIO_TypeDef *)((uint32_t )0x40000000 + 0x00020000 + 0x0C00), (uint16_t )0x8000);
-  STM16TIMC$timer_clock_init();
+  STM32Micro16TIMC$timer_clock_init();
 
-  STM16TIMC$init_timer_irq();
-  STM16TIMC$init_free_timer();
-  STM16TIMC$init_alarm_timer();
+  STM32Micro16TIMC$init_timer_irq();
+  STM32Micro16TIMC$init_free_timer();
+  STM32Micro16TIMC$init_alarm_timer();
   /* atomic removed: atomic calls only */
   {
-    STM16TIMC$alarm = 0;
+    STM32Micro16TIMC$alarm = 0;
   }
   TIM_Cmd((TIM_TypeDef *)((uint32_t )0x40000000 + 0x0800), ENABLE);
+  return SUCCESS;
+}
+
+# 74 "/home/taoli/workspace/PortingTinyOs/tinyos-2.x/tos/chips/stm32f4/timer/STM32Milli32TIMC.nc"
+inline static void STM32Milli32TIMC$init_alarm_timer(void )
+#line 74
+{
+
+  TIM_DeInit((TIM_TypeDef *)((uint32_t )0x40000000 + 0x0000));
+  TIM_TimeBaseInit((TIM_TypeDef *)((uint32_t )0x40000000 + 0x0000), &STM32Milli32TIMC$TIM_TimeBaseStructure);
+}
+
+#line 61
+inline static void STM32Milli32TIMC$init_free_timer(void )
+{
+
+
+  TIM_DeInit((TIM_TypeDef *)((uint32_t )0x40000000 + 0x0C00));
+
+  STM32Milli32TIMC$TIM_TimeBaseStructure.TIM_Period = (uint32_t )0xFFFFFFFF;
+
+  TIM_TimeBaseInit((TIM_TypeDef *)((uint32_t )0x40000000 + 0x0C00), &STM32Milli32TIMC$TIM_TimeBaseStructure);
+  TIM_ITConfig((TIM_TypeDef *)((uint32_t )0x40000000 + 0x0C00), (uint16_t )0x0001, ENABLE);
+}
+
+
+
+
+
+
+
+
+
+inline static void STM32Milli32TIMC$init_timer_irq(void )
+#line 81
+{
+
+  NVIC_InitTypeDef conf;
+
+  conf.NVIC_IRQChannel = TIM5_IRQn;
+  conf.NVIC_IRQChannelSubPriority = 0;
+  conf.NVIC_IRQChannelPreemptionPriority = 1;
+  conf.NVIC_IRQChannelCmd = ENABLE;
+  NVIC_Init(&conf);
+
+  conf.NVIC_IRQChannel = TIM2_IRQn;
+  conf.NVIC_IRQChannelSubPriority = 1;
+  conf.NVIC_IRQChannelPreemptionPriority = 1;
+  conf.NVIC_IRQChannelCmd = ENABLE;
+  NVIC_Init(&conf);
+}
+
+#line 54
+inline static void STM32Milli32TIMC$timer_clock_init(void )
+{
+  RCC_APB1PeriphClockCmd((uint32_t )0x00000008, ENABLE);
+  RCC_APB1PeriphClockCmd((uint32_t )0x00000001, ENABLE);
+}
+
+#line 126
+static inline error_t STM32Milli32TIMC$Init$init(void )
+{
+  GPIO_ResetBits((GPIO_TypeDef *)((uint32_t )0x40000000 + 0x00020000 + 0x0C00), (uint16_t )0x8000);
+  STM32Milli32TIMC$timer_clock_init();
+
+  STM32Milli32TIMC$init_timer_irq();
+  STM32Milli32TIMC$init_free_timer();
+  STM32Milli32TIMC$init_alarm_timer();
+  /* atomic removed: atomic calls only */
+  {
+    STM32Milli32TIMC$alarm = 0;
+  }
+  TIM_Cmd((TIM_TypeDef *)((uint32_t )0x40000000 + 0x0C00), ENABLE);
   return SUCCESS;
 }
 
@@ -4291,7 +4924,9 @@ inline static error_t RealMainP$SoftwareInit$init(void ){
 #line 51
 
 #line 51
-  __nesc_result = STM16TIMC$Init$init();
+  __nesc_result = STM32Milli32TIMC$Init$init();
+#line 51
+  __nesc_result = ecombine(__nesc_result, STM32Micro16TIMC$Init$init());
 #line 51
 
 #line 51
@@ -4299,16 +4934,46 @@ inline static error_t RealMainP$SoftwareInit$init(void ){
 #line 51
 }
 #line 51
-# 101 "/home/taoli/workspace/PortingTinyOs/tinyos-2.x/tos/chips/stm32f4/stm32f4hardware.h"
-static __inline void __nesc_enable_interrupt()
-#line 101
-{
-  uint32_t statusReg = 0;
+# 56 "/home/taoli/workspace/PortingTinyOs/tinyos-2.x/tos/interfaces/TaskBasic.nc"
+inline static error_t /*HilTimerMilliC.VirtTimersMilli32*/VirtualizeTimerC$1$updateFromTimer$postTask(void ){
+#line 56
+  unsigned char __nesc_result;
+#line 56
 
-#line 120
-  return;
+#line 56
+  __nesc_result = SchedulerBasicP$TaskBasic$postTask(/*HilTimerMilliC.VirtTimersMilli32*/VirtualizeTimerC$1$updateFromTimer);
+#line 56
+
+#line 56
+  return __nesc_result;
+#line 56
+}
+#line 56
+# 133 "/home/taoli/workspace/PortingTinyOs/tinyos-2.x/tos/lib/timer/VirtualizeTimerC.nc"
+static inline void /*HilTimerMilliC.VirtTimersMilli32*/VirtualizeTimerC$1$startTimer(uint8_t num, uint32_t t0, uint32_t dt, bool isoneshot)
+{
+  /*HilTimerMilliC.VirtTimersMilli32*/VirtualizeTimerC$1$Timer_t *timer = &/*HilTimerMilliC.VirtTimersMilli32*/VirtualizeTimerC$1$m_timers[num];
+
+#line 136
+  timer->t0 = t0;
+  timer->dt = dt;
+  timer->isoneshot = isoneshot;
+  timer->isrunning = TRUE;
+  /*HilTimerMilliC.VirtTimersMilli32*/VirtualizeTimerC$1$updateFromTimer$postTask();
 }
 
+static inline void /*HilTimerMilliC.VirtTimersMilli32*/VirtualizeTimerC$1$Timer$startPeriodic(uint8_t num, uint32_t dt)
+{
+  /*HilTimerMilliC.VirtTimersMilli32*/VirtualizeTimerC$1$startTimer(num, /*HilTimerMilliC.VirtTimersMilli32*/VirtualizeTimerC$1$TimerFrom$getNow(), dt, FALSE);
+}
+
+# 53 "/home/taoli/workspace/PortingTinyOs/tinyos-2.x/tos/lib/timer/Timer.nc"
+inline static void BlinkC$Timer1$startPeriodic(uint32_t dt){
+#line 53
+  /*HilTimerMilliC.VirtTimersMilli32*/VirtualizeTimerC$1$Timer$startPeriodic(0U, dt);
+#line 53
+}
+#line 53
 # 56 "/home/taoli/workspace/PortingTinyOs/tinyos-2.x/tos/interfaces/TaskBasic.nc"
 inline static error_t /*HilTimerMicroC.VirtTimersMicro32*/VirtualizeTimerC$0$updateFromTimer$postTask(void ){
 #line 56
@@ -4352,7 +5017,8 @@ inline static void BlinkC$Timer0$startPeriodic(uint32_t dt){
 # 50 "BlinkC.nc"
 static inline void BlinkC$Boot$booted(void )
 {
-  BlinkC$Timer0$startPeriodic(2500000);
+  BlinkC$Timer0$startPeriodic(3145728);
+  BlinkC$Timer1$startPeriodic(1024);
 }
 
 # 49 "/home/taoli/workspace/PortingTinyOs/tinyos-2.x/tos/interfaces/Boot.nc"
@@ -4368,9 +5034,9 @@ static inline void SchedulerBasicP$TaskBasic$default$runTask(uint8_t id)
 }
 
 # 64 "/home/taoli/workspace/PortingTinyOs/tinyos-2.x/tos/interfaces/TaskBasic.nc"
-inline static void SchedulerBasicP$TaskBasic$runTask(uint8_t arg_0x2af004aef4c8){
+inline static void SchedulerBasicP$TaskBasic$runTask(uint8_t arg_0x2b430d185cb0){
 #line 64
-  switch (arg_0x2af004aef4c8) {
+  switch (arg_0x2b430d185cb0) {
 #line 64
     case /*HilTimerMicroC.VirtTimersMicro32*/VirtualizeTimerC$0$updateFromTimer:
 #line 64
@@ -4384,9 +5050,21 @@ inline static void SchedulerBasicP$TaskBasic$runTask(uint8_t arg_0x2af004aef4c8)
 #line 64
       break;
 #line 64
+    case /*HilTimerMilliC.VirtTimersMilli32*/VirtualizeTimerC$1$updateFromTimer:
+#line 64
+      /*HilTimerMilliC.VirtTimersMilli32*/VirtualizeTimerC$1$updateFromTimer$runTask();
+#line 64
+      break;
+#line 64
+    case /*HilTimerMilliC.AlarmToTimerMilli32*/AlarmToTimerC$1$fired:
+#line 64
+      /*HilTimerMilliC.AlarmToTimerMilli32*/AlarmToTimerC$1$fired$runTask();
+#line 64
+      break;
+#line 64
     default:
 #line 64
-      SchedulerBasicP$TaskBasic$default$runTask(arg_0x2af004aef4c8);
+      SchedulerBasicP$TaskBasic$default$runTask(arg_0x2b430d185cb0);
 #line 64
       break;
 #line 64
@@ -4394,13 +5072,22 @@ inline static void SchedulerBasicP$TaskBasic$runTask(uint8_t arg_0x2af004aef4c8)
 #line 64
 }
 #line 64
-# 65 "/home/taoli/workspace/PortingTinyOs/tinyos-2.x/tos/chips/stm32f4/McuSleepC.nc"
-static inline void McuSleepC$McuSleep$sleep(void )
-#line 65
+# 66 "/home/taoli/workspace/PortingTinyOs/tinyos-2.x/tos/chips/stm32f4/McuSleepC.nc"
+static inline void McuSleepC$enable_interrupts(void )
+#line 66
 {
-#line 103
+
   TIM_ITConfig((TIM_TypeDef *)((uint32_t )0x40000000 + 0x0400), (uint16_t )0x0001, ENABLE);
-#line 159
+  TIM_ITConfig((TIM_TypeDef *)((uint32_t )0x40000000 + 0x0000), (uint16_t )0x0001, ENABLE);
+}
+
+
+static inline void McuSleepC$McuSleep$sleep(void )
+#line 73
+{
+#line 113
+  McuSleepC$enable_interrupts();
+#line 167
   return;
 }
 
@@ -4464,6 +5151,7 @@ inline static void RealMainP$Scheduler$taskLoop(void ){
 # 174 "/home/taoli/workspace/PortingTinyOs/tinyos-2.x/tos/lib/timer/TransformAlarmC.nc"
 static inline void /*HilTimerMicroC.AlarmMicro32.TransformAlarm*/TransformAlarmC$0$Counter$overflow(void )
 {
+  return;
 }
 
 # 47 "/home/taoli/workspace/PortingTinyOs/tinyos-2.x/tos/lib/timer/CounterToLocalTimeC.nc"
@@ -4487,6 +5175,7 @@ static inline void /*CounterTMicro32C.TransformCounter*/TransformCounterC$0$Coun
   {
     /*CounterTMicro32C.TransformCounter*/TransformCounterC$0$m_upper++;
 
+
     if ((/*CounterTMicro32C.TransformCounter*/TransformCounterC$0$m_upper & /*CounterTMicro32C.TransformCounter*/TransformCounterC$0$OVERFLOW_MASK) == 0) {
       /*CounterTMicro32C.TransformCounter*/TransformCounterC$0$Counter$overflow();
       }
@@ -4494,7 +5183,7 @@ static inline void /*CounterTMicro32C.TransformCounter*/TransformCounterC$0$Coun
 }
 
 # 71 "/home/taoli/workspace/PortingTinyOs/tinyos-2.x/tos/lib/timer/Counter.nc"
-inline static void STM16TIMC$Counter$overflow(void ){
+inline static void STM32Micro16TIMC$Counter$overflow(void ){
 #line 71
   /*CounterTMicro32C.TransformCounter*/TransformCounterC$0$CounterFrom$overflow();
 #line 71
@@ -4550,29 +5239,55 @@ static inline void /*HilTimerMicroC.AlarmMicro32.TransformAlarm*/TransformAlarmC
 }
 
 # 67 "/home/taoli/workspace/PortingTinyOs/tinyos-2.x/tos/lib/timer/Alarm.nc"
-inline static void STM16TIMC$Alarm$fired(void ){
+inline static void STM32Micro16TIMC$Alarm$fired(void ){
 #line 67
   /*HilTimerMicroC.AlarmMicro32.TransformAlarm*/TransformAlarmC$0$AlarmFrom$fired();
 #line 67
 }
 #line 67
-# 124 "/home/taoli/workspace/PortingTinyOs/tinyos-2.x/tos/chips/stm32f4/stm32f4hardware.h"
-static __inline void __nesc_disable_interrupt()
-#line 124
+# 233 "/home/taoli/workspace/PortingTinyOs/tinyos-2.x/tos/chips/stm32f4/timer/STM32Milli32TIMC.nc"
+static inline void STM32Milli32TIMC$Counter$default$overflow(void )
+#line 233
 {
-  uint32_t statusReg = 0;
-
-
-
-
-
-
-
-
-
   return;
 }
 
+# 71 "/home/taoli/workspace/PortingTinyOs/tinyos-2.x/tos/lib/timer/Counter.nc"
+inline static void STM32Milli32TIMC$Counter$overflow(void ){
+#line 71
+  STM32Milli32TIMC$Counter$default$overflow();
+#line 71
+}
+#line 71
+# 56 "/home/taoli/workspace/PortingTinyOs/tinyos-2.x/tos/interfaces/TaskBasic.nc"
+inline static error_t /*HilTimerMilliC.AlarmToTimerMilli32*/AlarmToTimerC$1$fired$postTask(void ){
+#line 56
+  unsigned char __nesc_result;
+#line 56
+
+#line 56
+  __nesc_result = SchedulerBasicP$TaskBasic$postTask(/*HilTimerMilliC.AlarmToTimerMilli32*/AlarmToTimerC$1$fired);
+#line 56
+
+#line 56
+  return __nesc_result;
+#line 56
+}
+#line 56
+# 70 "/home/taoli/workspace/PortingTinyOs/tinyos-2.x/tos/lib/timer/AlarmToTimerC.nc"
+static inline void /*HilTimerMilliC.AlarmToTimerMilli32*/AlarmToTimerC$1$Alarm$fired(void )
+{
+#line 71
+  /*HilTimerMilliC.AlarmToTimerMilli32*/AlarmToTimerC$1$fired$postTask();
+}
+
+# 67 "/home/taoli/workspace/PortingTinyOs/tinyos-2.x/tos/lib/timer/Alarm.nc"
+inline static void STM32Milli32TIMC$Alarm$fired(void ){
+#line 67
+  /*HilTimerMilliC.AlarmToTimerMilli32*/AlarmToTimerC$1$Alarm$fired();
+#line 67
+}
+#line 67
 # 52 "/home/taoli/workspace/PortingTinyOs/tinyos-2.x/tos/system/RealMainP.nc"
   int main(void )
 #line 52
@@ -4646,6 +5361,178 @@ static bool SchedulerBasicP$Scheduler$runNextTask(void )
 #line 134
   SchedulerBasicP$TaskBasic$runTask(nextTask);
   return TRUE;
+}
+
+# 63 "/home/taoli/workspace/PortingTinyOs/tinyos-2.x/tos/lib/timer/AlarmToTimerC.nc"
+static void /*HilTimerMilliC.AlarmToTimerMilli32*/AlarmToTimerC$1$fired$runTask(void )
+{
+  if (/*HilTimerMilliC.AlarmToTimerMilli32*/AlarmToTimerC$1$m_oneshot == FALSE) {
+    /*HilTimerMilliC.AlarmToTimerMilli32*/AlarmToTimerC$1$start(/*HilTimerMilliC.AlarmToTimerMilli32*/AlarmToTimerC$1$Alarm$getAlarm(), /*HilTimerMilliC.AlarmToTimerMilli32*/AlarmToTimerC$1$m_dt, FALSE);
+    }
+#line 67
+  /*HilTimerMilliC.AlarmToTimerMilli32*/AlarmToTimerC$1$Timer$fired();
+}
+
+# 157 "/home/taoli/workspace/PortingTinyOs/tinyos-2.x/tos/chips/stm32f4/timer/STM32Milli32TIMC.nc"
+static void STM32Milli32TIMC$Alarm$startAt(uint32_t t0, uint32_t dt)
+{
+
+  uint32_t interval;
+
+#line 161
+  STM32Milli32TIMC$disableInterrupt();
+  {
+
+    uint32_t now = STM32Milli32TIMC$Alarm$getNow();
+    uint32_t elapsed = now - t0;
+
+#line 166
+    now = ((TIM_TypeDef *)((uint32_t )0x40000000 + 0x0C00))->CNT;
+
+    if (elapsed >= dt) 
+      {
+
+        interval = 2;
+
+        STM32Milli32TIMC$alarm = now + 2;
+      }
+    else 
+
+
+      {
+        uint32_t remaining = dt - elapsed;
+
+#line 180
+        if (remaining <= 1) 
+          {
+            interval = 2;
+
+            STM32Milli32TIMC$alarm = now + 2;
+          }
+        else 
+
+          {
+            interval = remaining;
+
+            STM32Milli32TIMC$alarm = now + remaining;
+          }
+      }
+
+
+    STM32Milli32TIMC$set_alarm_interval(interval);
+    STM32Milli32TIMC$enableInterrupt();
+  }
+}
+
+#line 116
+static void STM32Milli32TIMC$disableInterrupt(void )
+{
+  { __nesc_atomic_t __nesc_atomic = __nesc_atomic_start();
+#line 118
+    {
+      TIM_Cmd((TIM_TypeDef *)((uint32_t )0x40000000 + 0x0000), DISABLE);
+      TIM_ITConfig((TIM_TypeDef *)((uint32_t )0x40000000 + 0x0000), (uint16_t )0x0001, DISABLE);
+    }
+#line 121
+    __nesc_atomic_end(__nesc_atomic); }
+  STM32Milli32TIMC$running = FALSE;
+}
+
+# 62 "/home/taoli/workspace/PortingTinyOs/tinyos-2.x/tos/lib/timer/VirtualizeTimerC.nc"
+static void /*HilTimerMilliC.VirtTimersMilli32*/VirtualizeTimerC$1$fireTimers(uint32_t now)
+{
+  uint8_t num;
+
+  for (num = 0; num < /*HilTimerMilliC.VirtTimersMilli32*/VirtualizeTimerC$1$NUM_TIMERS; num++) 
+    {
+      /*HilTimerMilliC.VirtTimersMilli32*/VirtualizeTimerC$1$Timer_t *timer = &/*HilTimerMilliC.VirtTimersMilli32*/VirtualizeTimerC$1$m_timers[num];
+
+      if (timer->isrunning) 
+        {
+          uint32_t elapsed = now - timer->t0;
+
+          if (elapsed >= timer->dt) 
+            {
+              if (timer->isoneshot) {
+                timer->isrunning = FALSE;
+                }
+              else {
+#line 79
+                timer->t0 += timer->dt;
+                }
+              /*HilTimerMilliC.VirtTimersMilli32*/VirtualizeTimerC$1$Timer$fired(num);
+              break;
+            }
+        }
+    }
+  /*HilTimerMilliC.VirtTimersMilli32*/VirtualizeTimerC$1$updateFromTimer$postTask();
+}
+
+# 160 "/home/taoli/workspace/PortingTinyOs/tinyos-2.x/tos/system/SchedulerBasicP.nc"
+static error_t SchedulerBasicP$TaskBasic$postTask(uint8_t id)
+{
+  { __nesc_atomic_t __nesc_atomic = __nesc_atomic_start();
+#line 162
+    {
+#line 162
+      {
+        unsigned char __nesc_temp = 
+#line 162
+        SchedulerBasicP$pushTask(id) ? SUCCESS : EBUSY;
+
+        {
+#line 162
+          __nesc_atomic_end(__nesc_atomic); 
+#line 162
+          return __nesc_temp;
+        }
+      }
+    }
+#line 165
+    __nesc_atomic_end(__nesc_atomic); }
+}
+
+# 89 "/home/taoli/workspace/PortingTinyOs/tinyos-2.x/tos/lib/timer/VirtualizeTimerC.nc"
+static void /*HilTimerMilliC.VirtTimersMilli32*/VirtualizeTimerC$1$updateFromTimer$runTask(void )
+{
+
+
+
+
+  uint32_t now = /*HilTimerMilliC.VirtTimersMilli32*/VirtualizeTimerC$1$TimerFrom$getNow();
+  int32_t min_remaining = (1UL << 31) - 1;
+  bool min_remaining_isset = FALSE;
+  uint8_t num;
+
+  /*HilTimerMilliC.VirtTimersMilli32*/VirtualizeTimerC$1$TimerFrom$stop();
+
+  for (num = 0; num < /*HilTimerMilliC.VirtTimersMilli32*/VirtualizeTimerC$1$NUM_TIMERS; num++) 
+    {
+      /*HilTimerMilliC.VirtTimersMilli32*/VirtualizeTimerC$1$Timer_t *timer = &/*HilTimerMilliC.VirtTimersMilli32*/VirtualizeTimerC$1$m_timers[num];
+
+      if (timer->isrunning) 
+        {
+          uint32_t elapsed = now - timer->t0;
+          int32_t remaining = timer->dt - elapsed;
+
+          if (remaining < min_remaining) 
+            {
+              min_remaining = remaining;
+              min_remaining_isset = TRUE;
+            }
+        }
+    }
+
+  if (min_remaining_isset) 
+    {
+      if (min_remaining <= 0) {
+        /*HilTimerMilliC.VirtTimersMilli32*/VirtualizeTimerC$1$fireTimers(now);
+        }
+      else {
+#line 124
+        /*HilTimerMilliC.VirtTimersMilli32*/VirtualizeTimerC$1$TimerFrom$startOneShotAt(now, min_remaining);
+        }
+    }
 }
 
 # 63 "/home/taoli/workspace/PortingTinyOs/tinyos-2.x/tos/lib/timer/AlarmToTimerC.nc"
@@ -4733,35 +5620,39 @@ static /*CounterTMicro32C.TransformCounter*/TransformCounterC$0$to_size_type /*C
 {
   /*CounterTMicro32C.TransformCounter*/TransformCounterC$0$to_size_type rv = 0;
 
-  {
-    /*CounterTMicro32C.TransformCounter*/TransformCounterC$0$upper_count_type high = /*CounterTMicro32C.TransformCounter*/TransformCounterC$0$m_upper;
-    /*CounterTMicro32C.TransformCounter*/TransformCounterC$0$from_size_type low = /*CounterTMicro32C.TransformCounter*/TransformCounterC$0$CounterFrom$get();
+#line 84
+  { __nesc_atomic_t __nesc_atomic = __nesc_atomic_start();
+    {
+      /*CounterTMicro32C.TransformCounter*/TransformCounterC$0$upper_count_type high = /*CounterTMicro32C.TransformCounter*/TransformCounterC$0$m_upper;
+      /*CounterTMicro32C.TransformCounter*/TransformCounterC$0$from_size_type low = /*CounterTMicro32C.TransformCounter*/TransformCounterC$0$CounterFrom$get();
 
 #line 88
-    if (/*CounterTMicro32C.TransformCounter*/TransformCounterC$0$CounterFrom$isOverflowPending()) 
+      if (/*CounterTMicro32C.TransformCounter*/TransformCounterC$0$CounterFrom$isOverflowPending()) 
+        {
+
+
+
+
+
+
+          high++;
+          low = /*CounterTMicro32C.TransformCounter*/TransformCounterC$0$CounterFrom$get();
+        }
       {
-
-
-
-
-
-
-        high++;
-        low = /*CounterTMicro32C.TransformCounter*/TransformCounterC$0$CounterFrom$get();
-      }
-    {
-      /*CounterTMicro32C.TransformCounter*/TransformCounterC$0$to_size_type high_to = high;
-      /*CounterTMicro32C.TransformCounter*/TransformCounterC$0$to_size_type low_to = low >> /*CounterTMicro32C.TransformCounter*/TransformCounterC$0$LOW_SHIFT_RIGHT;
+        /*CounterTMicro32C.TransformCounter*/TransformCounterC$0$to_size_type high_to = high;
+        /*CounterTMicro32C.TransformCounter*/TransformCounterC$0$to_size_type low_to = low >> /*CounterTMicro32C.TransformCounter*/TransformCounterC$0$LOW_SHIFT_RIGHT;
 
 #line 102
-      rv = (high_to << /*CounterTMicro32C.TransformCounter*/TransformCounterC$0$HIGH_SHIFT_LEFT) | low_to;
+        rv = (high_to << /*CounterTMicro32C.TransformCounter*/TransformCounterC$0$HIGH_SHIFT_LEFT) | low_to;
+      }
     }
-  }
+#line 104
+    __nesc_atomic_end(__nesc_atomic); }
   return rv;
 }
 
-# 119 "/home/taoli/workspace/PortingTinyOs/tinyos-2.x/tos/chips/stm32f4/timer/STM16TIMC.nc"
-static void STM16TIMC$disableInterrupt(void )
+# 119 "/home/taoli/workspace/PortingTinyOs/tinyos-2.x/tos/chips/stm32f4/timer/STM32Micro16TIMC.nc"
+static void STM32Micro16TIMC$disableInterrupt(void )
 {
   { __nesc_atomic_t __nesc_atomic = __nesc_atomic_start();
 #line 121
@@ -4771,7 +5662,7 @@ static void STM16TIMC$disableInterrupt(void )
     }
 #line 124
     __nesc_atomic_end(__nesc_atomic); }
-  STM16TIMC$running = FALSE;
+  STM32Micro16TIMC$running = FALSE;
 }
 
 # 62 "/home/taoli/workspace/PortingTinyOs/tinyos-2.x/tos/lib/timer/VirtualizeTimerC.nc"
@@ -4804,31 +5695,6 @@ static void /*HilTimerMicroC.VirtTimersMicro32*/VirtualizeTimerC$0$fireTimers(ui
   /*HilTimerMicroC.VirtTimersMicro32*/VirtualizeTimerC$0$updateFromTimer$postTask();
 }
 
-# 160 "/home/taoli/workspace/PortingTinyOs/tinyos-2.x/tos/system/SchedulerBasicP.nc"
-static error_t SchedulerBasicP$TaskBasic$postTask(uint8_t id)
-{
-  { __nesc_atomic_t __nesc_atomic = __nesc_atomic_start();
-#line 162
-    {
-#line 162
-      {
-        unsigned char __nesc_temp = 
-#line 162
-        SchedulerBasicP$pushTask(id) ? SUCCESS : EBUSY;
-
-        {
-#line 162
-          __nesc_atomic_end(__nesc_atomic); 
-#line 162
-          return __nesc_temp;
-        }
-      }
-    }
-#line 165
-    __nesc_atomic_end(__nesc_atomic); }
-}
-
-# 89 "/home/taoli/workspace/PortingTinyOs/tinyos-2.x/tos/lib/timer/VirtualizeTimerC.nc"
 static void /*HilTimerMicroC.VirtTimersMicro32*/VirtualizeTimerC$0$updateFromTimer$runTask(void )
 {
 
@@ -4871,7 +5737,7 @@ static void /*HilTimerMicroC.VirtTimersMicro32*/VirtualizeTimerC$0$updateFromTim
     }
 }
 
-# 241 "/home/taoli/workspace/PortingTinyOs/tinyos-2.x/tos/chips/stm32f4/timer/STM16TIMC.nc"
+# 241 "/home/taoli/workspace/PortingTinyOs/tinyos-2.x/tos/chips/stm32f4/timer/STM32Micro16TIMC.nc"
   void TIM4_IRQHandler(void )
 #line 241
 {
@@ -4887,7 +5753,7 @@ static void /*HilTimerMicroC.VirtTimersMicro32*/VirtualizeTimerC$0$updateFromTim
         }
       (
       (TIM_TypeDef *)((uint32_t )0x40000000 + 0x0800))->SR = (uint16_t )~ (uint16_t )0x0001;
-      STM16TIMC$Counter$overflow();
+      STM32Micro16TIMC$Counter$overflow();
     }
 }
 
@@ -4897,9 +5763,41 @@ static void /*HilTimerMicroC.VirtTimersMicro32*/VirtualizeTimerC$0$updateFromTim
 {
   if (TIM_GetFlagStatus((TIM_TypeDef *)((uint32_t )0x40000000 + 0x0400), (uint16_t )0x0001) != RESET) {
 
-      STM16TIMC$Alarm$stop();
-      STM16TIMC$Alarm$fired();
+      STM32Micro16TIMC$Alarm$stop();
+      STM32Micro16TIMC$Alarm$fired();
     }
   TIM_ClearITPendingBit((TIM_TypeDef *)((uint32_t )0x40000000 + 0x0400), (uint16_t )0x0001);
+}
+
+# 238 "/home/taoli/workspace/PortingTinyOs/tinyos-2.x/tos/chips/stm32f4/timer/STM32Milli32TIMC.nc"
+  void TIM5_IRQHandler(void )
+#line 238
+{
+
+  static uint32_t j = 0;
+
+#line 241
+  if (TIM_GetFlagStatus((TIM_TypeDef *)((uint32_t )0x40000000 + 0x0C00), (uint16_t )0x0001) != RESET) {
+
+      j++;
+      if (j == 1) {
+          GPIO_SetBits((GPIO_TypeDef *)((uint32_t )0x40000000 + 0x00020000 + 0x0C00), (uint16_t )0x8000);
+        }
+      (
+      (TIM_TypeDef *)((uint32_t )0x40000000 + 0x0C00))->SR = (uint16_t )~ (uint16_t )0x0001;
+      STM32Milli32TIMC$Counter$overflow();
+    }
+}
+
+
+
+  void TIM2_IRQHandler(void )
+{
+  if (TIM_GetFlagStatus((TIM_TypeDef *)((uint32_t )0x40000000 + 0x0000), (uint16_t )0x0001) != RESET) {
+
+      STM32Milli32TIMC$Alarm$stop();
+      STM32Milli32TIMC$Alarm$fired();
+    }
+  TIM_ClearITPendingBit((TIM_TypeDef *)((uint32_t )0x40000000 + 0x0000), (uint16_t )0x0001);
 }
 

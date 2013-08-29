@@ -36,14 +36,14 @@ configuration CounterMilliC
 implementation
 {
 //  components STM32RtcC;
-  components STM32TIMC;
+  components STM32Milli32TIMC as STM32Milli;
 
   components PlatformP;
 
-  CounterMilli32 = STM32TIMC.Counter;
-  LocalTimeMilli = STM32TIMC.LocalTime;
+  CounterMilli32 = STM32Milli.Counter;
+  LocalTimeMilli = STM32Milli.LocalTime;
 
   // Wire the initialization to the plaform init routine
-  PlatformP.Init -> STM32TIMC.Init;
+  PlatformP.Init -> STM32Milli.Init;
 }
 

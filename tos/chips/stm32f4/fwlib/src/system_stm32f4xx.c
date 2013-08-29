@@ -395,8 +395,15 @@ static void SetSysClock(void)
 		/* PCLK2 = HCLK / 2*/
 		RCC->CFGR |= RCC_CFGR_PPRE2_DIV2;
 
+
+		//In order to generate 1024 KHz Milli timer
+		//I have to slow down the APB clock to 42 MHz
+		//Because the largest value of the prescalar of TIM2/5 is 65536 if APB clock is 84 Mhz
+
 		/* PCLK1 = HCLK / 4*/
-		RCC->CFGR |= RCC_CFGR_PPRE1_DIV4;
+//		RCC->CFGR |= RCC_CFGR_PPRE1_DIV4;
+		/* PCLK1 = HCLK / 8*/
+		RCC->CFGR |= RCC_CFGR_PPRE1_DIV8;
 
 		/* Configure the main PLL */
 		RCC->PLLCFGR = PLL_M | (PLL_N << 6) | (((PLL_P >> 1) -1) << 16) |

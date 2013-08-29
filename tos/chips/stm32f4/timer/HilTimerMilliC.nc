@@ -42,11 +42,12 @@ implementation
   components new AlarmToTimerC(TMilli) as AlarmToTimerMilli32;
   components new AlarmMilliC() as AlarmMilli32;
 //  components STM32RtcC;
-  components STM32TIMC;
-
+  components STM32Milli32TIMC as STM32Milli;
+  
+  
   Init = AlarmMilli32;
   TimerMilli = VirtTimersMilli32.Timer;
-  LocalTime = STM32TIMC;
+  LocalTime = STM32Milli;
   
   VirtTimersMilli32.TimerFrom -> AlarmToTimerMilli32.Timer;
   AlarmToTimerMilli32.Alarm -> AlarmMilli32.Alarm;
