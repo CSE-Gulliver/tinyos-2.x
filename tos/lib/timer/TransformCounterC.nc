@@ -1,23 +1,34 @@
-//$Id: TransformCounterC.nc,v 1.5 2008/06/24 04:07:29 regehr Exp $
+//$Id$
 
-/* "Copyright (c) 2000-2003 The Regents of the University of California.  
+/* Copyright (c) 2000-2003 The Regents of the University of California.  
  * All rights reserved.
  *
- * Permission to use, copy, modify, and distribute this software and its
- * documentation for any purpose, without fee, and without written agreement
- * is hereby granted, provided that the above copyright notice, the following
- * two paragraphs and the author appear in all copies of this software.
- * 
- * IN NO EVENT SHALL THE UNIVERSITY OF CALIFORNIA BE LIABLE TO ANY PARTY FOR
- * DIRECT, INDIRECT, SPECIAL, INCIDENTAL, OR CONSEQUENTIAL DAMAGES ARISING OUT
- * OF THE USE OF THIS SOFTWARE AND ITS DOCUMENTATION, EVEN IF THE UNIVERSITY
- * OF CALIFORNIA HAS BEEN ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
- * 
- * THE UNIVERSITY OF CALIFORNIA SPECIFICALLY DISCLAIMS ANY WARRANTIES,
- * INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY
- * AND FITNESS FOR A PARTICULAR PURPOSE.  THE SOFTWARE PROVIDED HEREUNDER IS
- * ON AN "AS IS" BASIS, AND THE UNIVERSITY OF CALIFORNIA HAS NO OBLIGATION TO
- * PROVIDE MAINTENANCE, SUPPORT, UPDATES, ENHANCEMENTS, OR MODIFICATIONS."
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions
+ * are met:
+ *
+ * - Redistributions of source code must retain the above copyright
+ *   notice, this list of conditions and the following disclaimer.
+ * - Redistributions in binary form must reproduce the above copyright
+ *   notice, this list of conditions and the following disclaimer in the
+ *   documentation and/or other materials provided with the
+ *   distribution.
+ * - Neither the name of the copyright holder nor the names of
+ *   its contributors may be used to endorse or promote products derived
+ *   from this software without specific prior written permission.
+ *
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+ * "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+ * LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS
+ * FOR A PARTICULAR PURPOSE ARE DISCLAIMED.  IN NO EVENT SHALL
+ * THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT,
+ * INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+ * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
+ * SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION)
+ * HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT,
+ * STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+ * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED
+ * OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
 /**
@@ -51,9 +62,10 @@ generic module TransformCounterC(
   provides interface Counter<to_precision_tag,to_size_type> as Counter;
   uses interface Counter<from_precision_tag,from_size_type> as CounterFrom;
 }
+
 implementation
 {
-  upper_count_type m_upper;
+  upper_count_type m_upper=0;
 
   enum
   {
@@ -69,7 +81,7 @@ implementation
   async command to_size_type Counter.get()
   {
     to_size_type rv = 0;
-    atomic
+//    atomic
     {
       upper_count_type high = m_upper;
       from_size_type low = call CounterFrom.get();
@@ -81,13 +93,13 @@ implementation
 	// m_upper will be handled normally as soon as the out-most atomic
 	// block is left unless Clear.clearOverflow is called in the interim.
 	// This is all together the expected behavior.
-	high++;
-	low = call CounterFrom.get();
+			high++;
+			low = call CounterFrom.get();
       }
       {
-	to_size_type high_to = high;
-	to_size_type low_to = low >> LOW_SHIFT_RIGHT;
-	rv = (high_to << HIGH_SHIFT_LEFT) | low_to;
+		to_size_type high_to = high;
+		to_size_type low_to = low >> LOW_SHIFT_RIGHT;
+		rv = (high_to << HIGH_SHIFT_LEFT) | low_to;
       }
     }
     return rv;
@@ -109,23 +121,25 @@ implementation
 
   async command void Counter.clearOverflow()
   {
-    atomic
+//    atomic
     {
       if (call Counter.isOverflowPending())
       {
-	m_upper++;
-	call CounterFrom.clearOverflow();
+		m_upper++;
+		call CounterFrom.clearOverflow();
       }
     }
   }
 
   async event void CounterFrom.overflow()
   {
-    atomic
+//    atomic
     {
       m_upper++;
+//      call CounterFrom.clearOverflow();
       if ((m_upper & OVERFLOW_MASK) == 0)
-	signal Counter.overflow();
+		signal Counter.overflow();
+	
     }
   }
 }

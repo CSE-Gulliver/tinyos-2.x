@@ -42,20 +42,13 @@
 typedef uint32_t __nesc_atomic_t;
 
 //NOTE...at the moment, these functions will ONLY disable the IRQ...FIQ is left alone
-inline  __nesc_atomic_t __nesc_atomic_start(void) @spontaneous()
+inline __nesc_atomic_t __nesc_atomic_start(void) @spontaneous()
 {
   uint32_t result = 0;
   uint32_t temp = 0;
-// CPU_IntDis();
-// __set_PRIMASK(1);
-// __set_FAULTMASK(1);
-
-
-// __disable_irq();
-   TIM_ITConfig(TIM3, TIM_IT_Update, DISABLE);
-
-//asm volatile("" : : : "memory"); // ensure atomic section effect visibility 
-
+  
+  __set_PRIMASK(1);
+//   asm volatile("" : : : "memory"); // ensure atomic section effect visibility 
 /*
   asm volatile (
         "mrs %0,basepri\n\t"
@@ -69,22 +62,14 @@ inline  __nesc_atomic_t __nesc_atomic_start(void) @spontaneous()
   return result;
 }
 
-inline  void __nesc_atomic_end(__nesc_atomic_t oldState) @spontaneous()
+inline void __nesc_atomic_end(__nesc_atomic_t oldState) @spontaneous()
 {
   uint32_t  statusReg = 0;
-//asm volatile("" : : : "memory"); // ensure atomic section effect visibility 
 //  __set_PRIMASK(0);
-//	__set_FAULTMASK(0);
-//  __enable_irq();
-/*
-  if (SysTick_Config(SystemCoreClock / 1000)) {
-		// Capture error
-		while (1) {};
-  }*/
-  TIM_ITConfig(TIM3, TIM_IT_Update, ENABLE);	
-//	__enable_irq();
-  
-/*
+  /*
+  asm volatile("" : : : "memory"); // ensure atomic section effect visibility 
+
+
   oldState &= ARM_BASEPRI_INT_MASK;
   asm volatile (
         "mrs %0,basepri\n\t"
@@ -94,21 +79,13 @@ inline  void __nesc_atomic_end(__nesc_atomic_t oldState) @spontaneous()
         : "=r" (statusReg)
         : "0" (statusReg),"i" (ARM_BASEPRI_INT_MASK), "r" (oldState)
         );
-   */     
+        */
   return;
 }
 
 inline void __nesc_enable_interrupt() {
   uint32_t statusReg = 0;
-  
-//  __enable_irq();
 /*
-  if (SysTick_Config(SystemCoreClock / 1000)) {
-		// Capture error
-		while (1) {};
-	}*/
-  
-/*s
   asm volatile (
            "mrs %0,basepri\n\t"
            "bic %0,%1,#0xc0\n\t"

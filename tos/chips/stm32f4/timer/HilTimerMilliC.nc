@@ -41,11 +41,12 @@ implementation
   components new VirtualizeTimerC(TMilli,uniqueCount(UQ_TIMER_MILLI)) as VirtTimersMilli32;
   components new AlarmToTimerC(TMilli) as AlarmToTimerMilli32;
   components new AlarmMilliC() as AlarmMilli32;
-  components STM32RtcC;
+//  components STM32RtcC;
+  components STM32TIMC;
 
   Init = AlarmMilli32;
   TimerMilli = VirtTimersMilli32.Timer;
-  LocalTime = STM32RtcC;
+  LocalTime = STM32TIMC;
   
   VirtTimersMilli32.TimerFrom -> AlarmToTimerMilli32.Timer;
   AlarmToTimerMilli32.Alarm -> AlarmMilli32.Alarm;

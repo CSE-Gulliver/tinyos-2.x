@@ -11,6 +11,8 @@
 
 push ( @includes, qw(
 
+
+  %T/chips/cc2520
   %T/platforms/stm32f4
   %T/chips/stm32f4
   %T/chips/stm32f4/gpio

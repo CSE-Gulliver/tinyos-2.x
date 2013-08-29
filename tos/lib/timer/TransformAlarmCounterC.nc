@@ -147,6 +147,7 @@ implementation
     atomic
     {
       m_upper++;
+      call CounterFrom.clearOverflow();
       if ((m_upper & OVERFLOW_MASK) == 0)
 	signal Counter.overflow();
 

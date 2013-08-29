@@ -35,7 +35,7 @@ generic configuration AlarmMilliC()
 }
 implementation
 {
-  components STM32RtcC as AlarmC;
+  components STM32TIMC as AlarmC;
 
   Init = AlarmC;
   Alarm = AlarmC;

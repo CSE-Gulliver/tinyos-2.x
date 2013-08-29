@@ -153,11 +153,13 @@ implementation
   }
 
   async command void Alarm.stop[uint8_t id]() {
-    atomic m.isset[id] = FALSE;
+//    atomic 
+    m.isset[id] = FALSE;
   }
 
   async event void AlarmFrom.fired() {
-    atomic {
+//    atomic 
+    {
       signalAlarms();
       setNextAlarm();
     }
@@ -170,7 +172,8 @@ implementation
   }
 
   async command void Alarm.startAt[uint8_t id]( size_type t0, size_type dt ) {
-    atomic {
+//    atomic 
+    {
       m.alarm[id].t0 = t0;
       m.alarm[id].dt = dt;
       m.isset[id] = TRUE;
@@ -183,7 +186,8 @@ implementation
   }
 
   async command size_type Alarm.getAlarm[uint8_t id]() {
-    atomic return m.alarm[id].t0 + m.alarm[id].dt;
+//    atomic 
+    return m.alarm[id].t0 + m.alarm[id].dt;
   }
 
   default async event void Alarm.fired[uint8_t id]() {

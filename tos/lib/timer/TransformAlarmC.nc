@@ -61,6 +61,7 @@ generic module TransformAlarmC(
    */
   uses interface Alarm<from_precision_tag,from_size_type> as AlarmFrom;
 }
+
 implementation
 {
   to_size_type m_t0;
@@ -68,7 +69,7 @@ implementation
 
   enum
   {
-    MAX_DELAY_LOG2 = 8 * sizeof(from_size_type) - 1 - bit_shift_right,
+    MAX_DELAY_LOG2 = 8 * sizeof(from_size_type) -1 - bit_shift_right,
     MAX_DELAY = ((to_size_type)1) << MAX_DELAY_LOG2,
   };
 
@@ -79,8 +80,8 @@ implementation
 
   async command to_size_type Alarm.getAlarm()
   {
-    atomic return m_t0 + m_dt;
-    //return m_t0 + m_dt;
+//    atomic return m_t0 + m_dt;
+    return m_t0 + m_dt;
   }
 
   async command bool Alarm.isRunning()
@@ -95,50 +96,68 @@ implementation
 
   void set_alarm()
   {
+  	
+ 	
+  	static uint32_t i=0;
+  	  
+            	
     to_size_type now = call Counter.get(), expires, remaining;
-
+    
     /* m_t0 is assumed to be in the past. If it's > now, we assume
        that time has wrapped around */
-
+	
     expires = m_t0 + m_dt;
-
+	
+    i++; 
+    
+    	 
     /* The cast is necessary to get correct wrap-around arithmetic */
     remaining = (to_size_type)(expires - now);
-
+	now = call Counter.get();
     /* if (expires <= now) remaining = 0; in wrap-around arithmetic */
+     
     if (m_t0 <= now)
       {
-	if (expires >= m_t0 && // if it wraps, it's > now
-	    expires <= now)
-	  remaining = 0;
+		if (expires >= m_t0 && // if it wraps, it's > now
+	   	 expires <= now)
+	  	 {remaining = 0;}	 
+	  			
+      }else{
+		if (expires >= m_t0 || // didn't wrap so < now
+	   	 expires <= now)
+	 	 {remaining = 0; 
+	 	  if ( i==2&&(m_t0-now)>32769){
+    			GPIO_ToggleBits(GPIOD,GPIO_Pin_15);
+    		}	
+      		
+	 	 }	 
+
       }
-    else
-      {
-	if (expires >= m_t0 || // didn't wrap so < now
-	    expires <= now)
-	  remaining = 0;
-      }
+    
     if (remaining > MAX_DELAY)
       {
-	m_t0 = now + MAX_DELAY;
-	m_dt = remaining - MAX_DELAY;
-	remaining = MAX_DELAY;
+		m_t0 = now + MAX_DELAY;
+		m_dt = remaining - MAX_DELAY;
+		remaining = MAX_DELAY;	
+		
       }
     else
       {
-	m_t0 += m_dt;
-	m_dt = 0;
+		m_t0 += m_dt;
+		m_dt = 0;
       }
+    
     call AlarmFrom.startAt((from_size_type)now << bit_shift_right,
 			   (from_size_type)remaining << bit_shift_right);
   }
 
   async command void Alarm.startAt(to_size_type t0, to_size_type dt)
   {
-    atomic
+//    atomic
     {
       m_t0 = t0;
       m_dt = dt;
+      GPIO_ToggleBits(GPIOD,GPIO_Pin_13);
       set_alarm();
     }
   }
@@ -150,15 +169,17 @@ implementation
 
   async event void AlarmFrom.fired()
   {
-    atomic
+//    atomic
     {
       if(m_dt == 0)
       {
-	signal Alarm.fired();
+      	
+    
+		signal Alarm.fired();
       }
       else
       {
-	set_alarm();
+		set_alarm();
       }
     }
   }

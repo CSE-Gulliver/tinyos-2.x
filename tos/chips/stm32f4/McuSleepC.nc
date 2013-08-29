@@ -63,8 +63,6 @@ implementation {
     }
   
   async command void McuSleep.sleep() {
-  		
-
   	
       /*
        * Some notes ont he power management:
@@ -83,32 +81,32 @@ implementation {
       //*PERIPHERAL_BIT(GPIOC->ODR, 9) = 1;
 
       // slow down the clocks...
-      RCC_PCLK2Config(RCC_HCLK_Div16);
-      RCC_PCLK1Config(RCC_HCLK_Div16);
+//      RCC_PCLK2Config(RCC_HCLK_Div16);
+//      RCC_PCLK1Config(RCC_HCLK_Div16);
       
       // disable peripheral clocks
 //      RCC_APB2PeriphClockCmd(RCC_APB2Periph_AFIO | RCC_APB2Periph_GPIOA, DISABLE);
 //      RCC_AHBPeriphClockCmd(RCC_AHBPeriph_FLITF | RCC_AHBPeriph_SRAM, DISABLE);
-	  RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_GPIOD, DISABLE);
+//	  RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_GPIOD, DISABLE);
       // clock the system from internal RC
-      RCC_HSICmd(ENABLE);
+//      RCC_HSICmd(ENABLE);
       // wait until the HSI is ready
-      while(RCC_GetFlagStatus(RCC_FLAG_HSIRDY) == RESET);
-      RCC_SYSCLKConfig(RCC_SYSCLKSource_HSI);
+//      while(RCC_GetFlagStatus(RCC_FLAG_HSIRDY) == RESET);
+//      RCC_SYSCLKConfig(RCC_SYSCLKSource_HSI);
       // shut down the PLL
-      RCC_PLLCmd(DISABLE);
+//      RCC_PLLCmd(DISABLE);
       // shut down the external Oscillator
-      RCC_HSEConfig(RCC_HSE_OFF);
+//      RCC_HSEConfig(RCC_HSE_OFF);
       // FIXME: increasing this further above 64 somehow introduces
       // instabilities, and the MCU might not come back from sleep!
-      RCC_HCLKConfig(RCC_SYSCLK_Div64);
-
-	  __enable_irq();
+//      RCC_HCLKConfig(RCC_SYSCLK_Div64);
+	TIM_ITConfig(TIM3, TIM_IT_Update, ENABLE);
+//	  __enable_irq();
 
       //*PERIPHERAL_BIT(GPIOC->ODR, 8) = 0;
       // for now, we just put the MCU into SLEEP mode. More sophisticated
       // things later...
-      __WFI(); // wait for interrupt
+//      __WFI(); // wait for interrupt
 
       //*PERIPHERAL_BIT(GPIOC->ODR, 8) = 1;
 
@@ -123,35 +121,35 @@ implementation {
 
       // reinitialize the clocks
       // 1. Reinitialize the SYSCLK
-      RCC_HCLKConfig(RCC_SYSCLK_Div1);
+//      RCC_HCLKConfig(RCC_SYSCLK_Div1);
       // 2. Enable ext. high frequency OSC
-      RCC_HSEConfig(RCC_HSE_ON);
+//      RCC_HSEConfig(RCC_HSE_ON);
 
       // wait until the HSE is ready
-      while(RCC_GetFlagStatus(RCC_FLAG_HSERDY) == RESET);
+//      while(RCC_GetFlagStatus(RCC_FLAG_HSERDY) == RESET);
 
       // 3. Init PLL
 //      RCC_PLLConfig(RCC_PLLSource_HSE_Div1,RCC_PLLMul_9); // 72MHz
 
 		/* PCLK2 = HCLK / 2*/
-		RCC->CFGR |= RCC_CFGR_PPRE2_DIV2;
+//		RCC->CFGR |= RCC_CFGR_PPRE2_DIV2;
 
 		/* PCLK1 = HCLK / 4*/
-		RCC->CFGR |= RCC_CFGR_PPRE1_DIV4;
+//		RCC->CFGR |= RCC_CFGR_PPRE1_DIV4;
 
 		/* Configure the main PLL */
-		RCC->PLLCFGR = PLL_M | (PLL_N << 6) | (((PLL_P >> 1) -1) << 16) |
-				(RCC_PLLCFGR_PLLSRC_HSE) | (PLL_Q << 24);
+//		RCC->PLLCFGR = PLL_M | (PLL_N << 6) | (((PLL_P >> 1) -1) << 16) |
+//				(RCC_PLLCFGR_PLLSRC_HSE) | (PLL_Q << 24);
 
 
       //  RCC_PLLConfig(RCC_PLLSource_HSE_Div2,RCC_PLLMul_9); // 36MHz
-      RCC_PLLCmd(ENABLE);
+//      RCC_PLLCmd(ENABLE);
 
       // wait until the PLL is ready
-      while(RCC_GetFlagStatus(RCC_FLAG_PLLRDY) == RESET);
-      RCC_SYSCLKConfig(RCC_SYSCLKSource_PLLCLK);
+//      while(RCC_GetFlagStatus(RCC_FLAG_PLLRDY) == RESET);
+//      RCC_SYSCLKConfig(RCC_SYSCLKSource_PLLCLK);
 
-	  RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_GPIOD, ENABLE);
+//	  RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_GPIOD, ENABLE);
 
 //      RCC_APB2PeriphClockCmd(RCC_APB2Periph_AFIO | RCC_APB2Periph_GPIOC | RCC_APB2Periph_GPIOA, ENABLE);
 //      RCC_AHBPeriphClockCmd(RCC_AHBPeriph_FLITF | RCC_AHBPeriph_SRAM, ENABLE);

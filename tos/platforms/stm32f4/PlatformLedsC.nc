@@ -49,7 +49,10 @@ implementation
 //  Led1 = GeneralIOC.PortC8;
 //  Led2 = GeneralIOC.PortC9;
   
+//  Led0 = GeneralIOC.PortA2;
+//  Led1 = GeneralIOC.PortA3;
+
   Led0 = GeneralIOC.PortD12;
   Led1 = GeneralIOC.PortD13;
-//  Led2 = GeneralIOC.PortA4;
+//  Led2 = GeneralIOC.Port4;
 }

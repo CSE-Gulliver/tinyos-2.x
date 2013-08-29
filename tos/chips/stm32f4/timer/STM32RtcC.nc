@@ -36,12 +36,13 @@ module STM32RtcC @safe()
         interface LocalTime<TMilli> as LocalTime;
     }
 }
+
 implementation
 {
 
     norace uint32_t last_interval;
-   norace uint32_t system_time;
-   static volatile uint32_t fire_time=0;
+   	norace uint32_t system_time;
+   	static volatile uint32_t fire_time=0;
     bool running;
     
     volatile uint32_t wake_up_interval;
@@ -55,7 +56,6 @@ implementation
 		.NVIC_IRQChannelPreemptionPriority = 0,
 		.NVIC_IRQChannelSubPriority = 0,
 		.NVIC_IRQChannelCmd = ENABLE,		
-		
 	};
 
 	void init_rtc() {
@@ -93,7 +93,6 @@ implementation
 		RTC_Init(&RTC_InitStructure);
 	}
 
-	
 	void init_rtc_exti(){
 		EXTI_InitTypeDef EXTI_InitStructure;
 
@@ -109,12 +108,10 @@ implementation
 
 	}
 
-
 	//I think we can delete RTC_WaitForLastTask statements because
 	//1. they are in atomic scopes
 	//2. stm32f4xx_rtc.c implements some protective mechanisms in each function. 
 	//	Notice: there is no such mechanism in RTC_ITConfig, RTC_ClearITPendingBit (I found two so far)	
-	
 	
 	//Please call init_rtc_wu_second(uint32_t interval) before you enable the interrupt; otherwise
 	//you cannot start the wake up interrupt
@@ -127,7 +124,6 @@ implementation
             RTC_WakeUpCmd(ENABLE);
 //            RTC_WaitForLastTask();
 			}
-
 	/*SysTick->CTRL  = SysTick_CTRL_CLKSOURCE_Msk |
                    SysTick_CTRL_TICKINT_Msk   |
                    SysTick_CTRL_ENABLE_Msk; */
@@ -150,11 +146,10 @@ implementation
  			/*SysTick->CTRL  = SysTick_CTRL_CLKSOURCE_Msk |
                    SysTick_CTRL_TICKINT_Msk   |
                    !SysTick_CTRL_ENABLE_Msk;   */ 
-              running = FALSE;
+         running = FALSE;
               
 //        }
     }
-
 
     command error_t Init.init()
     {
@@ -220,10 +215,10 @@ implementation
                 if( remaining <= 1 )
                 {
                    wake_up_interval=0x00;
-                    atomic system_time = now+1;
+                   atomic system_time = now+1;
                     
 //                    atomic system_time = now+1;
-//					fire_time = now+1;
+//  	    			fire_time = now+1;
 //                     system_time = now+1;
 //                    RTC_WaitForLastTask();
                 }
@@ -231,7 +226,7 @@ implementation
                 {
 //                    RTC_SetAlarm(now+remaining); 
                   	wake_up_interval=remaining; 
-                  	 atomic system_time = now+remaining;
+                	atomic system_time = now+remaining;
 //                    atomic system_time = now+remaining;
 //                     fire_time = now+remaining;
 //                     system_time = now+remaining;
@@ -278,7 +273,6 @@ implementation
     async command uint32_t LocalTime.get() {
         return call Alarm.getNow();
     }
-
 
     default async event void Counter.overflow() {
         return;
